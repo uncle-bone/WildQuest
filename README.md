@@ -1,6 +1,13 @@
 # WildQuest
 
-WildQuest is a WoW Forever addon project informed by source audits of RestedXP Guides, Zygor Guides Viewer Forever, Questie, QuestieDB, and QuestieTrace.\n\n## Prototype status\n\nVersion 0.1.0-alpha.1 begins the addon scaffold: it reads the active quest log, optionally detects the public QuestieDB contract-4 API, and displays a small tracker window. Guide selection and progression are not implemented yet. This prototype has not been verified in the live client; there is no install-ready release ZIP.\n\nSource entry point: [WildQuest.toc](WildQuest.toc).\n
+WildQuest is a WoW Forever addon project informed by source audits of RestedXP Guides, Zygor Guides Viewer Forever, Questie, QuestieDB, and QuestieTrace.
+
+## Prototype status
+
+Version 0.1.0-alpha.1 begins the addon scaffold: it reads the active quest log, optionally detects the public QuestieDB contract-4 API, and displays a small tracker window. Guide selection and progression are not implemented yet. This prototype has not been verified in the live client; there is no install-ready release ZIP.
+
+Source entry point: [WildQuest.toc](WildQuest.toc).
+
 ## Research
 
 - [Research index](research/README.md)
