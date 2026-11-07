@@ -1,26 +1,55 @@
-# QuestieTrace — source audit
+# QuestieTrace — detailed capture and export audit
 
-## Purpose and source facts
+## Audited package
 
-QuestieTrace is packaged separately from Questie and QuestieDB. Its Forever TOC identifies version 1.9.0; its Lua source defines schema version 16. It captures local gameplay/addon events into sessions, with a maximum of 10 retained sessions as a storage backstop. Observed categories include quest/dialog state, NPC interactions, player state, map/zone, selected chat system messages, group/world, inventory and display.
+The uploaded Forever TOC targets interface 16001 and reports QuestieTrace 1.9.0. QuestieTrace.lua declares schema version 16. SavedVariables are split among global QuestieTrace settings, global QuestieTraceDumps, and per-character QuestieTraceCharacter sessions. The package includes 38 Lua files, including 35 under Modules, plus LibStub/LibDeflate and UI XML. See [audit coverage](../audit-coverage.md) for package counts.
 
-The source documents privacy filtering for potentially identifying chat payloads. Capture is local in the inspected code; export/reporting is a separate user action. This audit did not execute the addon, verify external reporting endpoints, or inspect every exporter path, so it is not a network/privacy guarantee.
+## Consent and capture lifecycle
 
-## Design lessons
+Consent is tri-state: nil means not asked, true means consent to local collection, false means declined. On first login with nil, the addon prompts before capture. Accept stores true, starts capture and enables share reminders. Decline stores false and does not ask again until the user invokes /qlt consent. If consent is revoked during capture, the live capture is discarded rather than saved. Existing recovered in-progress data is discarded when consent is not true.
 
-- Make capture opt-in and visibly show when active.
-- Keep a bounded, versioned local event schema.
-- Minimize collection and redact identity/chat data at capture time.
-- Preview exact export contents and require explicit user action.
-- Provide deletion/reset, retention limits and a clear event list.
-- Keep diagnostics separate from core guide behavior; normal operation should not require uploaded traces.
+With consent true, capture starts locally. A session records start/end times, events and tracker function streams. The session is placed in SavedVariables so it can survive reload/logout. On a later load, an unfinished session can be recovered/finalized. Sessions are encoded when saved; old plain-table sessions are migrated to encoded records. The oldest saved entries are pruned beyond a hard cap of 10.
 
-For WildQuest, record only fields needed to address a concrete bug or improve a specific datum. Never include chat/group identity by default. Review consent and transport design separately if reporting is added.
+Commands include /qlt status, /qlt consent, /qlt debug, and /qlt export, plus dump providers. The event handler is limited to a deduplicated list of events, but the installed trackers sample a broad set of API state and some event arguments. The main event groups are:
 
-## Licensing note
+- Quest state/dialog and quest POI/log changes.
+- NPC interactions, gossip, quest dialogs, merchants and loot.
+- Player identity/progression, level, skills, spells, reputation, carried item counts and equipment-related state.
+- Position, map exploration, map/zone changes and map hierarchy dumps.
+- Unit/nameplate/interactions, group state and game-object tooltip data.
+- Display state and frame heartbeat/performance context.
+- Selected system/loot/money/skill chat events.
 
-The uploaded QuestieTrace notice states GPLv3 for QuestieTrace, while bundled libraries keep their own licenses. This does not grant rights to Questie/QuestieDB datasets, names or logos. QuestieTrace source is not copied here.
+Many tracker streams append only when values change, use delayed probes around API updates, and safely wrap API calls that may be absent or return different shapes. This reduces duplicate records and accommodates the Forever client API. It still means the trace can contain a detailed timeline of a character's questing, location, inventory/progression and nearby interactions. “Anonymized” in the consent text should not be read as “contains no sensitive gameplay context.”
 
-## Reference
+## Privacy processing
+
+Tracked chat events pass through Core.SanitizeChatMsgArgs before they are written to events or passed to tracker callbacks. The privacy module builds player-name variants and redacts name text; the main event list deliberately omits DUEL_REQUESTED because it carries the challenger's name. Export construction deep-copies sessions and scrubs player GUID observations and matching name observations before encoding.
+
+These are meaningful safeguards, but they are transformations rather than a proof of anonymity: location/time, quest choices, group/world context, item/loot sequences and residual identifiers may still be identifying in combination. A WildQuest trace should default to less collection and clearly disclose exact fields.
+
+## Export and report handoff
+
+The export path is manual in the inspected code:
+
+1. The player opens /qlt export or clicks a reminder link.
+2. The addon builds a scrubbed copy and encodes it as CBOR, compresses it with Deflate, then converts it to printable text using LibDeflate. The game-native C_EncodingUtil codec is checked; missing codec support produces an error and disables the “reported” confirmation.
+3. The window displays the fixed destination https://questie.dev/trace, a single-line copy field, and counts for events, time, accepted quests and turned-in quests. The UI directs the player to copy the text and submit it at that URL. It does not send the payload itself; the browser submission is a separate user action.
+4. Closing the window leaves the sessions available. The “I reported this” button is only offered for a valid encoded payload and its tooltip says to click it after submission.
+5. On confirmation, only the exact source sessions included in that payload are deleted. Opening/closing alone does not delete them. If the live capture was included, the window rotates it into a saved snapshot and begins a fresh capture so later events do not alter the exported payload.
+
+The export UI locks the destination URL field, uses a single-line box because the game client can stall rendering large multiline strings, and permits Ctrl+A/Ctrl+C to copy the full encoded text. Export reminders are scheduled around resting/inn state after enough play time, are clickable, and are rate-limited to inn entry/login rather than repeated hourly while a player stays there.
+
+No automatic network upload call was found in the inspected export/trace path. The intended handoff is copy/paste to the web page. This is a static source finding, not a live network capture or verification of the website's server behavior.
+
+## WildQuest application
+
+If WildQuest adds diagnostics, use a narrower opt-in schema tied to a specific issue. Show capture state, field list, retention and export destination. Sanitize before persistence, not only before export; provide preview and explicit copy/share; never send in the background. Keep normal addon operation independent from diagnostics. Do not treat trace data as canonical world facts until reviewed and independently corroborated.
+
+## Licensing
+
+The uploaded QuestieTrace notice states GPLv3 for QuestieTrace, while bundled libraries have individual licenses. This does not grant rights to Questie/QuestieDB data, names or logos. QuestieTrace source and payloads are not copied into WildQuest.
+
+## References
 
 - [QuestieTrace source folder](https://github.com/Questie/Questie/tree/master/QuestieTrace)
