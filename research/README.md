@@ -18,6 +18,7 @@ The goal is to learn their architecture and identify compatible patterns for an 
 
 ## Documents
 
+- [Audit coverage and package inventory](audit-coverage.md)
 - [RestedXP audit](audits/restedxp.md)
 - [Zygor Forever audit](audits/zygor-forever.md)
 - [Questie and QuestieDB audit](audits/questie-questiedb.md)
