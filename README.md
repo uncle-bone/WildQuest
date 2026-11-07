@@ -1,35 +1,33 @@
 # WildQuest
 
-WildQuest is a questing addon for WoW Forever, informed by research into RestedXP, Zygor Forever, Questie, QuestieDB, and QuestieTrace.
+WildQuest is a standalone questing addon for WoW Forever (client 1.60.1 / interface 16001). Its runtime reads quest facts from WildQuest's own bundled database and the character's live quest log. It does not load or query Questie, QuestieDB, or any other addon.
 
-## Live-test build: 0.1.0-alpha.8
+## Current development build: 0.1.0-alpha.9
 
-The in-game window has **My Quests** and **Guide** pages. Use `/wq route` to assemble a catch-up route from your active quest log. It orders ready-to-turn-in quests first, then prioritizes quests found in both uploaded RXP and Zygor route sets, and keeps completed quest objectives moving automatically. The generated route uses original WildQuest text and the live quest log; QuestieDB provides optional names, levels, prerequisite facts, and giver coordinates. Click an active quest to create and open an objective-by-objective guide from the live quest log. The guide tracks quest state, shows progress, and supports manual previous/next controls. Enable both Questie and QuestieDB; WildQuest waits for QuestieDB to load before checking contract 4, and retries when the player enters the world. Status now distinguishes missing addons from an incompatible API. The full QuestieDB dataset is not bundled. When QuestieDB contract 4 is available, the guide can also show quest levels, prerequisite IDs, and quest-giver coordinates. The panel shows world or dungeon context.
+This build removes the Questie/QuestieDB runtime integration and adds an internal database provider. The personal install package includes bundled Forever quest, NPC, object, and item facts (5,233 quests, 13,417 NPCs, 7,045 objects, 21,442 items). `/wq route` builds a catch-up route from quests already in the live quest log; quest detail lookup, prerequisites, and giver coordinates come from WildQuest's own data. The draggable minimap button and XP observations remain available.
 
-A draggable WildQuest minimap button opens and closes the tracker. Left-click opens the tracker, right-click hides the button, and `/wq minimap` toggles it back on or off. The button is shown by default.
+The source repository's `Data/QuestDB.lua` is an empty public placeholder. The full generated database stays in the owner's private/local install package because the uploaded QuestieDB source warns that historical contributions may not have clear redistribution rights. The public repository is therefore the addon source, not the full personal install package.
 
-XP bar changes are tracked as unattributed XP; combat XP chat messages are tallied separately. WildQuest does not infer that a gray quest or mob gives no XP.
+## Still in development
 
-This remains an early alpha, not a 1.0.0 release. The current build does not yet include full authored leveling/dungeon route packs, a complete character-specific prerequisite evaluator, map pins/navigation, or automatic safe skipping. RXP and Zygor guide coverage (2,596 RXP quest IDs, 1,743 Zygor quest IDs, 1,460 overlapping) now informs route ordering; their guide scripts and prose are not copied into this repository. QuestieDB is used as an optional source of quest metadata and prerequisite facts; install and enable Questie plus QuestieDB for those lookups. WoW Forever client behavior still needs live verification.
+WildQuest is not a complete leveling or dungeon guide product yet. It still needs original authored leveling and dungeon route packs, character-aware route selection and safe chain-aware skipping, a player-confirmed catch-up/override flow for unknown quest history, useful in-game navigation/map pins, and live verification on WoW Forever. Quest chains preserve OR (`preQuestSingle`) versus AND (`preQuestGroup`) semantics; unknown quests are never silently marked completed. Route-source IDs are only coverage signals and no RXP/Zygor route prose or scripts are included.
+
+## Commands
+
+- `/wq` opens or hides the tracker.
+- `/wq route` builds a catch-up route from active quests.
+- `/wq quest <ID or title>` opens a guide for an active quest.
+- `/wq quests`, `/wq guides`, `/wq status`, `/wq dungeon`, `/wq xp`, `/wq next`, `/wq reset`, and `/wq minimap` provide tracker controls and status.
 
 ## Install
 
-Download the [WildQuest source ZIP](https://github.com/uncle-bone/WildQuest/archive/refs/heads/main.zip), extract it, rename the folder to `WildQuest`, and place it in the Forever client's `Interface/AddOns` folder. Enable WildQuest.
-
-Type `/wq` to open the quest list. Click an active quest to open its guide. Use `/wq help` for commands; `/wq xp` shows XP observations.
+Use the private `WildQuest-0.1.0-alpha.9-Forever.zip` install package from the owner's Library for the self-contained build with bundled data. Extract its `WildQuest` folder into `Interface/AddOns`. Do not install or enable Questie or QuestieDB for WildQuest.
 
 ## Research
 
+- [Standalone addon architecture](research/architecture/standalone-addon-design.md)
+- [Source inputs and extraction summary](research/library-source-manifest.md)
 - [Research index](research/README.md)
-- [Audit coverage and package inventory](research/audit-coverage.md)
-- [RestedXP audit](research/audits/restedxp.md)
-- [Zygor Forever audit](research/audits/zygor-forever.md)
-- [Questie and QuestieDB audit](research/audits/questie-questiedb.md)
-- [QuestieTrace audit](research/audits/questietrace.md)
-- [WildQuest architecture proposal](research/architecture/wildquest-design-map.md)
-- [Detailed Questie runtime/database map](research/audits/questie-runtime-map.md)
-- [RestedXP and Zygor runtime comparison](research/audits/guide-runtime-comparison.md)
-- [Uploaded route-set inventory and architecture](research/audits/route-data-architecture.md)
-- [Source manifest, fingerprints, and update protocol](research/sources.md)
 
-The audits describe the uploaded builds. Third-party guide text, artwork, and database payloads are not mirrored into this repository; see audits for provenance and licensing notes.
+The research notes document source provenance. Third-party guide scripts, prose, and assets are not bundled.
+
