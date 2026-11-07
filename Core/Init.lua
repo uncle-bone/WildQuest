@@ -99,6 +99,19 @@ SlashCmdList.WILDQUEST = function(message)
         ns:Print(ns.QuestState:GetActiveCount() .. " active quests; QuestieDB " .. ns.Provider:GetStatus() .. ".")
     elseif command == "guides" then
         PrintGuides()
+    elseif command == "quest" then
+        if not ns.initialized then
+            ns:Print("still initializing.")
+            return
+        end
+        local questID = tonumber(argument)
+        if not questID then
+            ns:Print("usage: /wq quest <active quest ID>")
+            return
+        end
+        local ok, err = ns.GuideRuntime:TrackQuest(questID)
+        ns:Print(ok and ("tracking quest " .. tostring(questID) .. ".") or err)
+        ns.Tracker:Refresh()
     elseif command == "select" then
         if not ns.initialized then
             ns:Print("still initializing.")
