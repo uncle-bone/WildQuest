@@ -37,7 +37,7 @@ local function AddLocationLines(lines, label, locations)
     if type(locations) ~= "table" or #locations == 0 then return end
     lines[#lines + 1] = label
     for _, row in ipairs(locations) do
-        lines[#lines + 1] = row.kind .. " " .. tostring(row.id) .. " — area "
+        lines[#lines + 1] = row.kind .. " " .. tostring(row.id) .. " - area "
             .. tostring(row.area) .. " (" .. string.format("%.1f", tonumber(row.x) or 0)
             .. ", " .. string.format("%.1f", tonumber(row.y) or 0) .. ")"
     end
@@ -153,7 +153,7 @@ function ns.Tracker:RefreshQuestPage()
             local level = detail and tonumber(detail.questLevel)
             local suffix = quest.isReady and "  [READY]" or ""
             if level and level > 0 then suffix = suffix .. "  (level " .. level .. ")" end
-            if ns.GuideRuntime.currentGuideID == "quest-" .. quest.id then name = "|cff67d5ff» |r" .. name end
+            if ns.GuideRuntime.currentGuideID == "quest-" .. quest.id then name = "|cff67d5ff� |r" .. name end
             row.label:SetText(name .. suffix)
             row:Show()
         else
@@ -198,7 +198,7 @@ function ns.Tracker:RefreshGuidePage()
         local qLevel, minLevel = tonumber(details.questLevel), tonumber(details.requiredLevel)
         if qLevel and qLevel > 0 then lines[#lines + 1] = "Quest level: " .. qLevel end
         if minLevel and minLevel > 0 then lines[#lines + 1] = "Minimum level: " .. minLevel end
-        if tonumber(details.zoneOrSort) then lines[#lines + 1] = "QuestieDB zone/sort: " .. details.zoneOrSort end
+        if tonumber(details.zoneOrSort) then lines[#lines + 1] = "Zone/sort: " .. details.zoneOrSort end
     end
     lines[#lines + 1] = quest and (quest.isReady and "Status: ready to turn in" or "Status: in progress")
         or "Status: no longer active in quest log"
@@ -218,7 +218,7 @@ function ns.Tracker:RefreshGuidePage()
     lines[#lines + 1] = ""
     lines[#lines + 1] = "OBJECTIVES"
     for i, objective in ipairs(quest and quest.objectives or {}) do
-        local status = objective.finished and "✓ " or ""
+        local status = objective.finished and "� " or ""
         lines[#lines + 1] = status .. tostring(objective.fulfilled or 0) .. "/" .. tostring(objective.required or 1)
             .. "  " .. tostring(objective.text or ("Objective " .. i))
     end
@@ -227,7 +227,7 @@ function ns.Tracker:RefreshGuidePage()
         local prerequisites = details.preQuestSingle
         if type(prerequisites) == "table" and #prerequisites > 0 then
             lines[#lines + 1] = ""
-            lines[#lines + 1] = "PREREQUISITES (QuestieDB)"
+            lines[#lines + 1] = "PREREQUISITES"
             for _, id in ipairs(prerequisites) do
                 local complete = ns.QuestState:IsQuestTurnedIn(id)
                 local name = ns.Provider:GetQuestName(id) or ("Quest " .. id)
@@ -244,7 +244,7 @@ function ns.Tracker:RefreshGuidePage()
         end
     else
         lines[#lines + 1] = ""
-        lines[#lines + 1] = "QuestieDB is not connected; showing quest-log data only."
+        lines[#lines + 1] = "Bundled quest details are unavailable; showing quest-log data only."
     end
     self.pageText:SetText(table.concat(lines, "\n"))
 end
@@ -276,3 +276,6 @@ function ns.Tracker:OpenGuide()
     self.frame:Show()
     WildQuestDB.profile.trackerShown = true
 end
+
+
+
