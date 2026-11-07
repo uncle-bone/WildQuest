@@ -99,7 +99,7 @@ function ns.Tracker:Initialize()
                 if ok then self:SetPage("guide") else ns:Print(err) end
             end
         end)
-        row:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -176 - ((i - 1) * 38))
+        row:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -158 - ((i - 1) * 36))
         self.rows[i] = row
     end
 
