@@ -2,7 +2,7 @@
 
 ## Scope
 
-Static source audit of user-provided clean packages: RestedXP Guides, Zygor Guides Viewer Forever, Questie, the separate QuestieDB provider, and QuestieTrace.
+Static source audit of user-provided clean packages: RestedXP Guides, Zygor Guides Viewer Forever, Questie, the separate QuestieDB provider, and QuestieTrace. A new foundation review also records LevelForge and the newly supplied FlowUp, ForeverQuest, and Forever Guide sources.
 
 The goal is to learn their architecture and identify compatible patterns for an original WoW Forever quest guide. This review covers file structure, metadata, principal lifecycle, guide progression, data interfaces, navigation, persistence, and relevant boundaries. It is not a line-by-line commentary on every bundled third-party library or a claim that every function was dynamically exercised.
 
@@ -18,6 +18,7 @@ The goal is to learn their architecture and identify compatible patterns for an 
 
 ## Documents
 
+- [Leveling addon foundation and source-rights review](audits/leveling-addon-foundation-review.md)
 - [Audit coverage and package inventory](audit-coverage.md)
 - [RestedXP audit](audits/restedxp.md)
 - [Zygor Forever audit](audits/zygor-forever.md)
