@@ -18,11 +18,13 @@ This is an early, installable test build, not a 1.0.0 release. It provides:
 
 No original leveling or dungeon route pack is included yet. This build does not import RXP/Zygor guide text, does not yet build a verified complete quest-prerequisite graph, does not auto-skip route steps, and does not prove whether a particular quest or mob awarded XP. The active quest tracker and generated quest guide are the first client-side baseline; route selection, prerequisite-aware catch-up, and original dungeon guide content will be developed from live feedback and validated data.
 
+The addon source has not yet been verified in the live WoW Forever client. Treat this build as an initial test and report any Lua errors, missing objectives, or display issues.
+
 ## Install
 
-Download the [WildQuest source ZIP](https://github.com/uncle-bone/WildQuest/archive/refs/heads/main.zip), extract it, and place the inner `WildQuest` addon folder in the Forever client's `Interface/AddOns` directory. If the extracted folder has a branch suffix, rename it to `WildQuest`. Enable it in the AddOns list.
+Download the [WildQuest source ZIP](https://github.com/uncle-bone/WildQuest/archive/refs/heads/main.zip) and extract it. Rename the extracted `WildQuest-main` folder to `WildQuest`, then place that folder in the Forever client's `Interface/AddOns` directory. Enable WildQuest in the AddOns list.
 
-In game, type `/wq help`. Use `/wq quest` with an active quest ID or exact quest title to create a temporary guide for a quest currently in your log.
+In game, type `/wq help`. Use `/wq quests` to see active quest IDs and titles, then `/wq quest <ID or exact title>` to create a temporary guide for a quest currently in your log.
 
 ## Research
 
