@@ -10,7 +10,9 @@
 
 Fingerprints identify the reviewed files exactly. Inspection date: 2026-11-07. TOCs target interface 16001. Static source inspection only; no runtime validation is implied.
 
-Package inventories and coverage boundaries: [audit-coverage.md](audit-coverage.md).\n\n## Repository contents
+Package inventories and coverage boundaries: [audit-coverage.md](audit-coverage.md).
+
+## Repository contents
 
 Only original audit notes, architecture proposals and references are included. The supplied archives, addon source trees, guide text, embedded data and artwork are not mirrored. This keeps the repo focused on research rather than republishing third-party packages.
 
