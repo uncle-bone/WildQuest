@@ -11,7 +11,7 @@ function ns.Tracker:Initialize()
     end
 
     local frame = CreateFrame("Frame", "WildQuestTrackerFrame", UIParent)
-    frame:SetSize(310, 190)
+    frame:SetSize(340, 250)
     frame:SetPoint("CENTER", UIParent, "CENTER", 320, 0)
     frame:SetFrameStrata("MEDIUM")
     frame:SetMovable(true)
@@ -56,14 +56,30 @@ function ns.Tracker:Refresh()
     end
 
     local quests = ns.QuestState:GetActiveQuests()
+    local guide = ns.GuideRuntime:GetCurrentGuide()
+    local step = ns.GuideRuntime:GetCurrentStep()
     local lines = {
         "QuestieDB: " .. ns.Provider:GetStatus(),
         "Active quests: " .. tostring(#quests),
-        "Guide: " .. ns.GuideRuntime:GetDisplayState(),
-        "",
     }
 
-    local shown = math.min(#quests, 6)
+    if guide then
+        lines[#lines + 1] = "Guide: " .. guide.title
+        if step then
+            lines[#lines + 1] = "Step " .. step.id .. " — " .. ns.GuideRuntime:GetProgressText()
+            if step.text ~= "" then
+                lines[#lines + 1] = step.text
+            end
+        else
+            lines[#lines + 1] = "Guide complete"
+        end
+    else
+        lines[#lines + 1] = "Guide: none selected"
+        lines[#lines + 1] = "Use /wq guides to list guides"
+    end
+
+    lines[#lines + 1] = ""
+    local shown = math.min(#quests, 5)
     for index = 1, shown do
         local quest = quests[index]
         local name = quest.title or ns.Provider:GetQuestName(quest.id) or ("Quest " .. tostring(quest.id))
@@ -75,7 +91,7 @@ function ns.Tracker:Refresh()
     end
 
     lines[#lines + 1] = ""
-    lines[#lines + 1] = "/wq toggles this window"
+    lines[#lines + 1] = "/wq toggles | /wq next advances"
 
     self.text:SetText(table.concat(lines, "\n"))
 end
