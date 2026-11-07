@@ -57,7 +57,7 @@ end
 function ns.GuidePane:Initialize()
     if self.frame then return end
     local frame = CreateFrame("Frame", "WildQuestGuidePane", UIParent)
-    frame:SetSize(350, 228)
+    frame:SetSize(350, 260)
     frame:SetPoint("CENTER", UIParent, "CENTER", -600, 25)
     frame:SetFrameStrata("DIALOG")
     frame:SetClampedToScreen(true)
@@ -94,6 +94,12 @@ function ns.GuidePane:Initialize()
     self.objectiveText:SetWidth(322)
     self.objectiveText:SetJustifyH("LEFT")
     self.objectiveText:SetJustifyV("TOP")
+
+    self.stepsText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    self.stepsText:SetPoint("TOPLEFT", self.objectiveText, "BOTTOMLEFT", 0, -6)
+    self.stepsText:SetWidth(322)
+    self.stepsText:SetJustifyH("LEFT")
+    self.stepsText:SetJustifyV("TOP")
 
     self.itemsText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     self.itemsText:SetPoint("TOPLEFT", self.objectiveText, "BOTTOMLEFT", 0, -6)
@@ -207,6 +213,7 @@ function ns.GuidePane:Refresh()
         self.objectiveText:SetText("The tracker stays compact while you play; open the Options panel for the full library and character tools.")
         self.statusText:SetText("")
         self.itemsText:Hide()
+        self.stepsText:Hide()
         ns.TrackerArrow:SetTargets(nil)
         return
     end
@@ -220,6 +227,26 @@ function ns.GuidePane:Refresh()
     local questName = questID and (ns.Provider:GetQuestName(questID) or ("Quest " .. questID))
     self.stepText:SetText(questName or step.text or "Current step")
     self.objectiveText:SetText(ObjectiveSummary(active))
+
+    local currentIndex = guide.stepIndexes[step.id] or 1
+    local firstVisible = math.max(1, math.min(currentIndex - 1, #guide.steps - 3))
+    local lastVisible = math.min(#guide.steps, firstVisible + 3)
+    local routeLines = {}
+    for index = firstVisible, lastVisible do
+        local routeStep = guide.steps[index]
+        local marker
+        if index == currentIndex then
+            marker = "|cff67d5ff[NOW]|r "
+        elseif ns.GuideRuntime:IsStepComplete(routeStep) then
+            marker = "|cff70d090[OK]|r "
+        else
+            local stepQuestID = CurrentStepQuest(guide, routeStep)
+            marker = stepQuestID and ns.QuestState:IsQuestActive(stepQuestID)
+                and "|cffffd060[ACTIVE]|r " or "|cffaaaaaa[ ]|r "
+        end
+        routeLines[#routeLines + 1] = marker .. tostring(index) .. ". " .. tostring(routeStep.text or "Guide step")
+    end
+    self.stepsText:SetText(table.concat(routeLines, "\n"))
 
     if self.itemsExpanded and questID then
         local details = ns.Provider:GetQuestDetails(questID)
@@ -235,6 +262,7 @@ function ns.GuidePane:Refresh()
     else
         self.itemsText:Hide()
     end
+    if self.itemsExpanded and questID then self.stepsText:Hide() else self.stepsText:Show() end
 
     local targets = questID and ns.Navigation:TargetsForQuest(questID, active, objectiveIndex) or {}
     ns.TrackerArrow:SetTargets(targets)
