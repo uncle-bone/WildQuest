@@ -19,6 +19,7 @@ Source entry point: [WildQuest.toc](WildQuest.toc). Core modules: [initializatio
 - [WildQuest architecture proposal](research/architecture/wildquest-design-map.md)
 - [Detailed Questie runtime/database map](research/audits/questie-runtime-map.md)
 - [RestedXP and Zygor runtime comparison](research/audits/guide-runtime-comparison.md)
+- [Uploaded route-set inventory and architecture](research/audits/route-data-architecture.md)
 - [Source manifest, fingerprints, and update protocol](research/sources.md)
 
 The audits describe the uploaded builds. They are research, not claims that WildQuest contains or is derived from any reference addon. Third-party archives, guide text, artwork, and database payloads are deliberately not mirrored here. See each audit for observed license/provenance limits.
