@@ -4,7 +4,7 @@ WildQuest is a WoW Forever addon project informed by source audits of RestedXP G
 
 ## Prototype status
 
-Version 0.1.0-alpha.1 includes a declarative guide validator/runtime, per-character saved progress, quest-active/ready/turned-in/objective goals, optional QuestieDB contract-4 lookups, and a tracker window. No authored leveling route is registered yet. The prototype has not been verified in the live client; there is no install-ready release ZIP. See the [guide format](Guide/GuideFormat.md) for its schema and current limits.
+Version 0.1.0-alpha.2 includes a declarative guide validator/runtime, per-character saved progress, quest-active/ready/turned-in/objective goals, optional QuestieDB contract-4 lookups, and a tracker window. No authored leveling route is registered yet. The prototype has not been verified in the live client; there is no install-ready release ZIP. See the [guide format](Guide/GuideFormat.md) for its schema and current limits.
 
 Source entry point: [WildQuest.toc](WildQuest.toc). Core modules: [initialization](Core/Init.lua), [quest state](Core/QuestState.lua), [QuestieDB adapter](Core/Provider.lua), [guide validation](Guide/Validation.lua), [guide runtime](Guide/Runtime.lua), and [tracker UI](UI/Tracker.lua).
 
