@@ -5,6 +5,7 @@ WildQuest is a WoW Forever addon project. This repository begins with source aud
 ## Research
 
 - [Research index](research/README.md)
+- [Audit coverage and package inventory](research/audit-coverage.md)
 - [RestedXP audit](research/audits/restedxp.md)
 - [Zygor Forever audit](research/audits/zygor-forever.md)
 - [Questie and QuestieDB audit](research/audits/questie-questiedb.md)
