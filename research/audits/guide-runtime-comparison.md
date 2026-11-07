@@ -54,6 +54,23 @@ The addon TOC identifies Forever v1.6/interface 16001 and loads files-Forever.xm
 
 Guide evaluation decides whether a guide is applicable. The current step checks conditions and activates its goals; goals register only needed events. State changes update goal completion; when a step completes, sticky/jump/next-valid logic selects the next eligible step. Guide progress and quest tracking are distinct state layers. Route selection chooses travel between targets; pointer/UI then projects destination direction and map markers. Notifications/suggestions run as their own policy layer.
 
+## Detailed guide-language and state families observed
+
+RXP's function/tag registry is broader than quest kill/collect steps. In the uploaded functions.lua, the handlers fall into these functional families:
+
+- **Quest transitions:** accept, turn-in, complete, abandon, multi-quest actions, quest-item and quest-count checks, quest availability/completion/turn-in predicates.
+- **Navigation and travel:** map coordinates, quest-specific waypoint/objective counts, pins, lines/loops/radii, in-game waypoints, ground/fly movement, flight paths, hearthstone/bind points, death skips, and mount/flying prerequisites.
+- **NPC and interaction actions:** target/mob/unitscan, gossip selection/skip, vendor/trainer/stable, item use/cast/emote, vehicle actions and quest reward-choice UI.
+- **Inventory and economy:** collect/destroy/bank deposit/withdraw/retrieve, item and currency counts, buy/buy-until-broke, money, vendor goals and item upgrade helpers.
+- **Character requirements:** level, XP, profession/tradeskill/skill ranks, reputation, spells, mounts, pets, achievements, item stats, PvP/PvE, dungeon/season/event and faction checks.
+- **Control flow and presentation:** labels, next/jump/skip, visible/hide/complete conditions, zone/subzone/explore, timers/countdowns, scenario stages, group/party text, single/multibox behavior and explanatory text.
+
+Some handlers automate client UI interactions and rely on flavor-specific APIs. For WildQuest, prioritize read-only state recognition and event-driven objective updates; implement any click/accept/turn-in automation as a separate, explicitly optional behavior with conservative guards.
+
+RXP progress is represented at more than one level: guide/step/element state, quest-log objective counts, and shared party-step snapshots. The party view encodes active step items, validates decoded payloads, reconciles per-player widget rows and refreshes the display. This is step-sharing for coordination, not data-provider synchronization.
+
+Zygor's corresponding flow has distinct checks: Guide validity/status chooses an applicable guide; Step requirements filter candidate progression; Goal state handles visibility/completion/visited and its own event subscriptions; Step completion and jump/label/sticky logic chooses the next valid/completable step; Guide-level completion/status and notification suggestions remain separate. Pointer state may cycle among several goal waypoints independently of the step cursor.
+
 ## Practical comparison
 
 | Concern | RestedXP emphasis | Zygor emphasis | WildQuest decision |
