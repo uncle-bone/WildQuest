@@ -29,17 +29,29 @@ function ns.Tracker:Initialize()
     frame:RegisterForDrag("LeftButton")
     frame:SetScript("OnDragStart", frame.StartMoving)
     frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
-    frame:SetBackdrop({
-        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-        tile = true, tileSize = 16, edgeSize = 16,
-        insets = { left = 4, right = 4, top = 4, bottom = 4 },
-    })
-    frame:SetBackdropColor(0.03, 0.05, 0.08, 0.94)
+
+    -- SetBackdrop is not available on every WoW Forever frame implementation.
+    -- Use it when present; otherwise draw a background with a normal texture.
+    if type(frame.SetBackdrop) == "function" then
+        frame:SetBackdrop({
+            bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+            tile = true, tileSize = 16, edgeSize = 16,
+            insets = { left = 4, right = 4, top = 4, bottom = 4 },
+        })
+        if type(frame.SetBackdropColor) == "function" then
+            frame:SetBackdropColor(0.03, 0.05, 0.08, 0.94)
+        end
+    else
+        local background = frame:CreateTexture(nil, "BACKGROUND")
+        background:SetTexture("Interface/Tooltips/UI-Tooltip-Background")
+        background:SetAllPoints(frame)
+        background:SetVertexColor(0.03, 0.05, 0.08, 0.94)
+    end
 
     local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", frame, "TOPLEFT", 14, -12)
-    title:SetText("WildQuest  |cffaaaaaaalpha.3|r")
+    title:SetText("WildQuest  |cffaaaaaaalpha.4|r")
 
     local body = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     body:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -12)

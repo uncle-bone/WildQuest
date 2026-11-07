@@ -1,7 +1,7 @@
 local addonName, ns = ...
 
 ns.name = addonName
-ns.version = "0.1.0-alpha.3"
+ns.version = "0.1.0-alpha.4"
 ns.initialized = false
 
 function ns:Print(message)
