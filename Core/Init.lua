@@ -52,7 +52,6 @@ function ns:Initialize()
     WildQuestDB.profile.trackerShown = WildQuestDB.profile.trackerShown ~= false
     if WildQuestDB.profile.minimapShown == nil then WildQuestDB.profile.minimapShown = true end
 
-    self.initialized = true
     self.Provider:Initialize()
     self.QuestState:Initialize()
     self.GuidePacks:Initialize()
@@ -62,6 +61,7 @@ function ns:Initialize()
     self.GuideRuntime:Initialize()
     self.Tracker:Initialize()
     self.MinimapButton:Initialize()
+    self.initialized = true
     self.Tracker:Refresh()
 
     self:Print("WildQuest " .. self.version .. " loaded. Use /wq help for commands.")
@@ -145,6 +145,10 @@ SlashCmdList.WILDQUEST = function(message)
         ns:Print("Combat XP chat: +" .. xp.combatTextXP .. " across " .. xp.combatTextEvents .. " messages.")
         ns:Print("Latest observation: " .. xp.lastObservation .. ". Gray status/no-XP decisions are not inferred.")
     elseif command == "guides" then
+        if not ns.Tracker.frame then
+            ns:Print("tracker window is not ready yet; use /reload if startup previously failed.")
+            return
+        end
         ns.Tracker:SetPage("guides")
         ns.Tracker.frame:Show()
         WildQuestDB.profile.trackerShown = true
