@@ -2,11 +2,20 @@
 
 WildQuest is a standalone WoW Forever questing addon (client 1.60.1 / interface 16001). It uses its own bundled quest facts and route records; it does not require Questie or QuestieDB.
 
-## Current personal build: 0.1.0-alpha.12
+## Current source: 0.1.0-alpha.13
 
-[Download the owner-only install ZIP](https://chatgpt.com/library?file_id=libfile_fd77ecb4bb648191bcd702ee556ff538&account_id=personal).
+The alpha.13 guide-progress changes are committed to this repository. The latest owner-only install ZIP is still alpha.12 and does not contain those code changes:
 
-The private install ZIP includes the bundled database and generated route catalog. This public repository contains only the runtime code and empty private-data placeholders.
+[Download the latest packaged owner-only install ZIP (alpha.12)](https://chatgpt.com/library?file_id=libfile_fd77ecb4bb648191bcd702ee556ff538&account_id=personal).
+
+The private install ZIP includes the bundled database and generated route catalog. This public repository contains only the runtime code and empty private-data placeholders. No alpha.13 install ZIP has been built yet.
+
+## Alpha.13 guide progress
+
+- Selecting a guide scans the character's active quest log and resumes at the earliest unfinished quest found in that guide.
+- Steps advance automatically when WildQuest confirms their objectives or quest turn-in. It does not treat unknown past quests as complete.
+- The guide pane shows a four-step checklist with confirmed, active, and current markers, plus the number of confirmed-complete steps.
+- Use **Here** or `/wq here` to jump to the next unfinished guide quest in the quest log. Use `/wq step <number>` to choose a catch-up point manually.
 
 ## Questing layout
 
