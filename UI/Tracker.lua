@@ -91,7 +91,7 @@ function ns.Tracker:Refresh()
     end
 
     lines[#lines + 1] = ""
-    lines[#lines + 1] = "/wq toggles | /wq next advances"
+    lines[#lines + 1] = "/wq quest <ID or exact title> tracks | /wq next advances"
 
     self.text:SetText(table.concat(lines, "\n"))
 end
