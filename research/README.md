@@ -21,6 +21,8 @@ The goal is to learn their architecture and identify compatible patterns for an 
 - [RestedXP audit](audits/restedxp.md)
 - [Zygor Forever audit](audits/zygor-forever.md)
 - [Questie and QuestieDB audit](audits/questie-questiedb.md)
+- [Questie runtime and database module map](audits/questie-runtime-map.md)
+- [RestedXP and Zygor runtime comparison](audits/guide-runtime-comparison.md)
 - [QuestieTrace audit](audits/questietrace.md)
 - [WildQuest design map](architecture/wildquest-design-map.md)
 - [Source manifest and update protocol](sources.md)
