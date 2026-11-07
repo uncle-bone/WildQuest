@@ -1,12 +1,28 @@
 # WildQuest
 
-WildQuest is a WoW Forever addon project informed by source audits of RestedXP Guides, Zygor Guides Viewer Forever, Questie, QuestieDB, and QuestieTrace.
+WildQuest is a questing addon for WoW Forever, informed by research into RestedXP, Zygor Forever, Questie, QuestieDB, and QuestieTrace.
 
-## Prototype status
+## First live-test build: 0.1.0-alpha.3
 
-Version 0.1.0-alpha.2 includes a declarative guide validator/runtime, per-character saved progress, quest-active/ready/turned-in/objective goals, optional QuestieDB contract-4 lookups, and a tracker window. Use /wq quest <active quest ID or exact title> to generate a temporary objective/turn-in guide from the native quest log. No authored leveling route is registered yet. The prototype has not been verified in the live client; there is no install-ready release ZIP. See the [guide format](Guide/GuideFormat.md) for its schema and limits.
+This is an early, installable test build, not a 1.0.0 release. It provides:
 
-Source entry point: [WildQuest.toc](WildQuest.toc). Core modules: [initialization](Core/Init.lua), [quest state](Core/QuestState.lua), [QuestieDB adapter](Core/Provider.lua), [guide validation](Guide/Validation.lua), [guide runtime](Guide/Runtime.lua), and [tracker UI](UI/Tracker.lua).
+- A movable tracker showing location, character level, active quests, selected guide step, and up to two objectives per quest.
+- Persistent per-character progress for a selected guide.
+- `/wq quest <active quest ID or exact title>` to create a temporary objective and turn-in guide from the live quest log.
+- `/wq quests` and `/wq status` for quest and addon status.
+- Dungeon/raid context detection, while preserving the selected guide when entering or leaving an instance.
+- Session XP observations: XP-bar changes are labeled unattributed; combat XP chat messages are separately tallied. WildQuest does not infer that a gray quest or mob gives zero XP.
+- Optional QuestieDB contract-4 quest-name lookup when a compatible QuestieDB provider is present.
+
+### Known limits for this test
+
+No original leveling or dungeon route pack is included yet. This build does not import RXP/Zygor guide text, does not yet build a verified complete quest-prerequisite graph, does not auto-skip route steps, and does not prove whether a particular quest or mob awarded XP. The active quest tracker and generated quest guide are the first client-side baseline; route selection, prerequisite-aware catch-up, and original dungeon guide content will be developed from live feedback and validated data.
+
+## Install
+
+Download the [WildQuest source ZIP](https://github.com/uncle-bone/WildQuest/archive/refs/heads/main.zip), extract it, and place the inner `WildQuest` addon folder in the Forever client's `Interface/AddOns` directory. If the extracted folder has a branch suffix, rename it to `WildQuest`. Enable it in the AddOns list.
+
+In game, type `/wq help`. Use `/wq quest` with an active quest ID or exact quest title to create a temporary guide for a quest currently in your log.
 
 ## Research
 
@@ -22,6 +38,4 @@ Source entry point: [WildQuest.toc](WildQuest.toc). Core modules: [initializatio
 - [Uploaded route-set inventory and architecture](research/audits/route-data-architecture.md)
 - [Source manifest, fingerprints, and update protocol](research/sources.md)
 
-The audits describe the uploaded builds. They are research, not claims that WildQuest contains or is derived from any reference addon. Third-party archives, guide text, artwork, and database payloads are deliberately not mirrored here. See each audit for observed license/provenance limits.
-
-When newer packages or WoW Forever data sources are reviewed, record version/build, inspection date, SHA-256, scope, and findings in research/sources.md; update the relevant audit and design proposal. Keep verified facts distinct from hypotheses and record the source file/API behind each conclusion.
+The audits describe the uploaded builds. Third-party guide text, artwork, and database payloads are not mirrored into this repository; see the audits for provenance and licensing notes.
