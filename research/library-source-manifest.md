@@ -14,8 +14,12 @@ The uploads below are research inputs, not runtime dependencies. The public repo
 | WildQuest alpha.10 ZIP | libfile_23413ff3e8dc81919b7c23f98e911ac2 | Earlier standalone build |
 | WildQuest alpha.11 ZIP | libfile_34c18d0f92288191b1d771b200788911 | Auction event/startup fix |
 | WildQuest alpha.12 ZIP | libfile_fd77ecb4bb648191bcd702ee556ff538 | Split guide tracker, quick buttons, options panel, and destination arrow |
+| FlowUp 1.0.18 ZIP | libfile_53330905a0488191b1c4eec3d284e881 | New user-provided Forever route-addon source; GPLv3 project listing |
+| ForeverQuest 0.21.0 ZIP | libfile_cf2a19440fbc8191a5989b9f1a75b82a | New user-provided Forever quest-helper source; All Rights Reserved |
+| Forever Guide 1.38.5 ZIP (LFYZ) | libfile_32b430ac2fd88191962c780a0a05df0a | New user-provided reference/database addon; All Rights Reserved |
+| LevelForge website | https://levelforge.dev/ | Candidate foundation research; addon MIT; Forever guide catalog and studio |
 
-## Extracted research
+## New source review\n\nSee [Leveling addon foundation review](audits/leveling-addon-foundation-review.md) for licensing distinctions, capability comparison, and adoption plan. New package hashes and internal archive inventories remain pending.\n\n## Extracted research
 
 The normalized Forever database contains 5,233 quests, 13,417 NPCs, 7,045 objects, and 21,442 items. Parsed route coverage included 22 RXP Forever files (2,691 unique quest-action IDs) and 19 Zygor guide files (2,726 unique IDs), with 2,293 IDs shared. These are coverage counts, not a validation of route correctness.
 
