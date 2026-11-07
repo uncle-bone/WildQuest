@@ -22,6 +22,13 @@ end
 
 function ns.GuideRuntime:Initialize()
     local characterDB = ns:GetCharacterDB()
+    if type(characterDB.generatedGuide) == "table" then
+        local restored = ns:RegisterGuide(characterDB.generatedGuide)
+        if not restored then
+            characterDB.generatedGuide = nil
+        end
+    end
+
     local guideID = characterDB.currentGuideID
     local guide = guideID and ns.Guides[guideID]
 
@@ -110,16 +117,18 @@ function ns.GuideRuntime:TrackQuest(questID)
         }
 
         local title = quest.title or ns.Provider:GetQuestName(questID) or ("Quest " .. tostring(questID))
-        local registered, err = ns:RegisterGuide({
+        local definition = {
             id = guideID,
             title = title,
             version = "generated-1",
             flavor = "forever",
             steps = steps,
-        })
+        }
+        local registered, err = ns:RegisterGuide(definition)
         if not registered then
             return false, err
         end
+        ns:GetCharacterDB().generatedGuide = definition
     end
 
     return self:SelectGuide(guideID)
