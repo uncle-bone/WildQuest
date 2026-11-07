@@ -6,9 +6,9 @@
 
 ## Recommendation
 
-Use the **LevelForge addon** as the primary candidate foundation. Its CurseForge listing identifies the addon as MIT-licensed and supports WoW Forever 1.60.1. MIT permits copying and modification when its copyright and license notice are retained. The public LevelForge site describes an addon/studio workflow with guide progress, automatic catch-up, an arrow, step/objective tracking, and guide imports. It also reports complete Forever 1–60 Alliance and Horde community chains. The addon itself does not ship with those guides; players import guides from the catalog.
+Use the **LevelForge addon** as the primary candidate foundation. Its CurseForge listing identifies the addon as MIT-licensed and supports WoW Forever 1.60.1. MIT permits copying and modification when its copyright and license notice are retained. The public LevelForge site describes guide progress, automatic catch-up, an arrow, step/objective tracking, and guide imports. It reports Forever 1–60 Alliance and Horde community chains, but the addon itself does not ship those guides. The site says catalog guides are free to read, import, copy, and change; guide pages retain their authors. The developer's public guide-sharing note says only publish your own guides or copies you have the author's permission to publish. Treat personal import/edit permission separately from permission to bundle routes in a public WildQuest release.
 
-Before porting, obtain and inspect the actual LevelForge v0.1.22 package/source. That package was not among the new uploads referenced here, so this is a metadata and feature review rather than a source-code audit.
+Before porting, obtain and inspect the actual LevelForge addon package/source. That package was not among the new uploads referenced here, and no public GitHub source repository was found in this review. The LevelForge site currently advertises v0.1.22, while its CurseForge file listing returned v0.1.20 (157.3 KB); resolve that version mismatch and inspect the package before source migration. This is currently a metadata and feature review, not a code audit.
 
 ## Input comparison
 
@@ -27,7 +27,7 @@ Before porting, obtain and inspect the actual LevelForge v0.1.22 package/source.
 
 - Treat addon code, route/guide files, databases, artwork, and third-party libraries as separate license scopes.
 - A feature that imports another format is not permission to redistribute the imported guide. LevelForge's site credits guide authors, and its published guide pages keep author identity visible.
-- For LevelForge community guide content, record the original author, guide URL/ID, version, and modifications. Do not remove source credits.
+- For LevelForge community guide content, record the original author, guide URL/ID, version, and modifications. Do not remove source credits. Do not bundle community-guide copies in public WildQuest releases unless the guide author grants permission for that redistribution.
 - For FlowUp, preserve GPLv3 notices and make any distributed derivative source available under the applicable GPL terms. Verify whether its route files carry additional terms.
 - Keep All-Rights-Reserved ForeverQuest and LFYZ Forever Guide code/content out of WildQuest unless their authors grant permission.
 - Do not upload the user-supplied third-party ZIPs or copied guide/database payloads to the public WildQuest repository.
@@ -45,7 +45,7 @@ These references are source inventory only. No ZIP contents are mirrored in the 
 
 ## Next audit actions
 
-1. Obtain LevelForge v0.1.22 through its official download and inventory its TOC, code modules, license notice, dependencies, and guide format.
+1. Obtain the exact LevelForge package through its official download, resolve the site/CurseForge version mismatch, and inventory its TOC, code modules, license notice, dependencies, and guide format.
 2. Audit the three supplied ZIPs' TOCs, embedded licenses, guide/data file boundaries, and hashes.
 3. Compare LevelForge's guide state machine and catch-up behavior to WildQuest's current runtime before choosing a migration path.
 4. Build an original route catalog using only guide content with confirmed reuse rights and independently verified Forever quest facts.
