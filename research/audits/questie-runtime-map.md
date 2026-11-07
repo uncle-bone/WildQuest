@@ -76,6 +76,18 @@ QuestieDB config defines supported flavors, interface values, entity types (Ques
 
 Baked mode reads generated TOC metadata blocks. Source mode can read raw entity files. Shared entity construction normalizes/pads rows and freezes records to guard accidental mutation. Metadata/codec modules decode and normalize fields. Corrections are owner-registered and deterministically ordered; static and runtime corrections are applied through a registry that can publish changed IDs and provenance. Support data is installed/removed by named module. The API exposes contract checks, cache invalidation and provenance queries in addition to entity accessors.
 
+### Entity schema details observed in QuestieDB Types
+
+The type declarations describe 36 quest fields, 15 NPC fields, 16 item fields and 7 object fields. Important quest fields include starter/finisher references, required level and quest level, race/class masks, objective text and typed objective tuples, start/end triggers, prerequisite groups, child/parent/next-chain links, exclusive/group relations, required profession/reputation/source items/spells, availability gates, breadcrumbs, repeatable/reset flags and extra objectives. Extra objectives can carry spawn locations, icon/text metadata and entity references.
+
+NPC and object data include names, faction/flags, zones, spawn coordinates and waypoint paths; NPCs additionally have min/max level, rank, subname and quest starts/ends. Item data includes NPC/object/container drops, start quest, quest rewards, vendors, related quests, class/subclass, item/required level and taught spells.
+
+Coordinates are grouped by AreaID; an optional third coordinate slot can encode phase. Waypoint lists are grouped by zone and retain path segmentation. Objective tuples distinguish creatures, objects, items, reputation, kill credit and spell use. These packed shapes explain why consumers should use named getters/type definitions rather than guessing positional columns.
+
+QuestieDB exposes Get/GetAll/GetRaw/Exists/GetAllIds/IdsByName patterns. Get returns corrected/localized composed data; GetRaw bypasses corrections and localization. Name indices may be built synchronously or asynchronously in batches. Entity lists and rows are documented read-only. Localization covers selected fields and falls back to base entity values.
+
+Corrections support static registration, runtime/query-time corrections and direct data slots, with owner, load order, registration sequence, flavor filtering, deterministic composition, invalidation and provenance. Objective-order hints are supplied as a separate set. A consumer should not mutate these tables or assume a correction to one entity automatically changes Questie runtime policy.
+
 Consequences for WildQuest:
 
 - Check provider readiness, flavor and supported contract before calling it.
