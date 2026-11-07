@@ -52,8 +52,9 @@ end
 function ns.Tracker:Initialize()
     if self.frame then return end
     local frame = CreateFrame("Frame", "WildQuestTrackerFrame", UIParent)
-    frame:SetSize(920, 610)
-    frame:SetPoint("CENTER", UIParent, "CENTER", 250, 0)
+    frame:SetSize(700, 560)
+    frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -35, -70)
+    frame:SetClampedToScreen(true)
     frame:SetFrameStrata("MEDIUM")
     frame:SetMovable(true)
     frame:EnableMouse(true)
@@ -74,7 +75,7 @@ function ns.Tracker:Initialize()
 
     local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -13)
-    title:SetText("|cff67d5ffWildQuest|r  |cffaaaaaaalpha.11|r")
+    title:SetText("|cff67d5ffWildQuest|r  |cffaaaaaaalpha.12|r")
     self.locationText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     self.locationText:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
 
@@ -89,36 +90,36 @@ function ns.Tracker:Initialize()
         { "guide", "Current Guide" }, { "gear", "Gear" }, { "talents", "Talents" },
         { "gold", "Gold / AH" }, { "professions", "Professions" },
     }
-    local navWidth, gap = 105, 5
+    local navWidth = 102
     for i, entry in ipairs(nav) do
         local page, label = entry[1], entry[2]
-        local button = MakeButton(frame, navWidth, 29, label, function() self:SetPage(page) end)
-        button:SetPoint("TOPLEFT", frame, "TOPLEFT", 16 + (i - 1) * (navWidth + gap), -53)
+        local button = MakeButton(frame, navWidth, 27, label, function() self:SetPage(page) end)
+        button:SetPoint("TOPLEFT", frame, "TOPLEFT", 11, -61 - ((i - 1) * 31))
         self.nav[page] = button
     end
 
     self.pageTitle = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    self.pageTitle:SetPoint("TOPLEFT", frame, "TOPLEFT", 19, -96)
+    self.pageTitle:SetPoint("TOPLEFT", frame, "TOPLEFT", 128, -68)
     self.pageText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    self.pageText:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -120)
-    self.pageText:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -20, 64)
+    self.pageText:SetPoint("TOPLEFT", frame, "TOPLEFT", 128, -93)
+    self.pageText:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -15, 54)
     self.pageText:SetJustifyH("LEFT")
     self.pageText:SetJustifyV("TOP")
 
     for i = 1, ROWS do
         local rowIndex = i
-        local row = MakeButton(frame, 875, 36, "", function()
+        local row = MakeButton(frame, 555, 34, "", function()
             local quest = self.rowQuests and self.rowQuests[rowIndex]
             local route = self.rowRoutes and self.rowRoutes[rowIndex]
             if quest then
                 local ok, err = ns.GuideRuntime:TrackQuest(quest.id)
-                if ok then self:SetPage("guide") else ns:Print(err) end
+                if ok then self:SetPage("guide"); if ns.GuidePane then ns.GuidePane:Show() end else ns:Print(err) end
             elseif route then
                 local ok, err = ns.GuideRuntime:SelectGuide(route.id)
-                if ok then self:SetPage("guide") else ns:Print(err) end
+                if ok then self:SetPage("guide"); if ns.GuidePane then ns.GuidePane:Show() end else ns:Print(err) end
             end
         end)
-        row:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -158 - ((i - 1) * 39))
+        row:SetPoint("TOPLEFT", frame, "TOPLEFT", 125, -130 - ((i - 1) * 37))
         self.rows[i] = row
     end
 
@@ -240,7 +241,7 @@ function ns.Tracker:RefreshQuestPage()
             row:Show()
         else row:Hide() end
     end
-    self.pageText:ClearAllPoints(); self.pageText:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 20, -119); self.pageText:SetHeight(28)
+    self.pageText:ClearAllPoints(); self.pageText:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 128, -93); self.pageText:SetWidth(550); self.pageText:SetHeight(28)
     self.pageTitle:SetText("My active quests   -   " .. #quests)
     self.pageText:SetText("Select a quest to track its live objectives. Quest facts, prerequisite records, and giver locations are bundled with WildQuest.")
     self.prevPage:SetText("Previous quests")
@@ -270,7 +271,7 @@ function ns.Tracker:RefreshRoutePage()
         else row:Hide() end
     end
     local count = #routes
-    self.pageText:ClearAllPoints(); self.pageText:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 20, -119); self.pageText:SetHeight(28)
+    self.pageText:ClearAllPoints(); self.pageText:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 128, -93); self.pageText:SetWidth(550); self.pageText:SetHeight(28)
     self.pageTitle:SetText("Guide library   -   " .. self.guideCategory .. "   -   " .. count .. " guides")
     self.pageText:SetText("Pick a guide to start tracking it. Routes combine RXP and Zygor quest ordering where coverage overlaps, then use WildQuest's bundled quest facts and the live quest log.")
     self.prevPage:SetText("Previous guides"); self.nextPage:SetText("More guides")
@@ -442,8 +443,8 @@ function ns.Tracker:Refresh()
         .. "   -   " .. ns.QuestState:GetActiveCount() .. " active quests")
     HideRows(self)
     self.pageText:ClearAllPoints()
-    self.pageText:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 20, -120)
-    self.pageText:SetPoint("BOTTOMRIGHT", self.frame, "BOTTOMRIGHT", -20, 64)
+    self.pageText:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 128, -93)
+    self.pageText:SetPoint("BOTTOMRIGHT", self.frame, "BOTTOMRIGHT", -15, 54)
     self.pageText:SetHeight(0)
     self.prevPage:Hide(); self.nextPage:Hide(); self.categoryButton:Hide()
     self.prevStep:Hide(); self.nextStep:Hide(); self.backButton:Hide()

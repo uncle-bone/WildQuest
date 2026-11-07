@@ -1,0 +1,3 @@
+local _, ns = ...
+-- Private coordinate map lookup is supplied only in the owner's install package.
+ns.AreaToUiMap = ns.AreaToUiMap or {}

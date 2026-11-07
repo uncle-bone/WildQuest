@@ -2,13 +2,15 @@
 ## Title: WildQuest
 ## Notes: Standalone questing, route guides, gear, talents, and gold tools for WoW Forever
 ## Author: Uncle Bone
-## Version: 0.1.0-alpha.11
+## Version: 0.1.0-alpha.12
 ## SavedVariables: WildQuestDB
 ## X-Game-Type: camelot
 
 Data/QuestDB.lua
 Data/GuidePacks.lua
+Data/AreaToUiMap.lua
 Core/Provider.lua
+Core/Navigation.lua
 Core/QuestState.lua
 Core/XPObserver.lua
 Core/Gold.lua
@@ -20,5 +22,7 @@ Guide/SourceCoverage.lua
 Guide/Packs.lua
 Guide/Runtime.lua
 UI/Tracker.lua
+UI/TrackerArrow.lua
+UI/GuidePane.lua
 UI/MinimapButton.lua
 Core/Init.lua

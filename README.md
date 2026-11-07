@@ -1,29 +1,30 @@
 # WildQuest
 
-WildQuest is a standalone questing and character helper for WoW Forever (client 1.60.1 / interface 16001). It uses its own bundled data and the game's APIs; it does not require Questie or QuestieDB.
+WildQuest is a standalone WoW Forever questing addon (client 1.60.1 / interface 16001). It uses its own bundled quest facts and route records; it does not require Questie or QuestieDB.
 
-## Current personal build: 0.1.0-alpha.11
+## Current personal build: 0.1.0-alpha.12
 
-[Download the owner-only install ZIP](https://chatgpt.com/library?file_id=libfile_34c18d0f92288191b1d771b200788911&account_id=personal). The private package contains the bundled data; the public repository intentionally keeps those data files empty.
+The private install ZIP includes the bundled database and generated route catalog. This public repository contains only the runtime code and empty private-data placeholders.
 
-### Quick start
+## Questing layout
 
-1. Extract the ZIP and place its `WildQuest` folder in `Interface/AddOns`.
-2. Enable WildQuest and reload the UI.
-3. Type `/wq` to open the tracker. Use `/wq guides` to open the guide browser, or click WildQuest's minimap button.
+Alpha.12 introduces three separate, movable questing windows:
 
-### Included features
+- **Guide tracker at the left:** current route, step, live quest objective progress, and next/previous controls.
+- **Quick button strip above it:** expand quest-item details, toggle destination tracking, and open the options panel. The strip can be dragged separately.
+- **Destination arrow near the bottom:** points toward the current quest objective or turn-in when the bundled coordinates and client map APIs are available. The arrow is independently movable.
+- **Options panel at the right:** guide library, quests, gear, talents, gold/AH, and profession pages.
 
-- Home dashboard, active quest list, live objectives, and catch-up route from the active quest log.
-- Guide browser for leveling, dungeons, events, professions, and reputations.
-- Current guide with quest details, prerequisite OR/AND groups, and bundled quest giver locations.
-- Gear item-level audit, talent build snapshot, gold/session tracking, and profession skill overview.
-- Auction House scan when the Forever client supports the required search API and result event. On clients without that event, scanning reports unavailable and WildQuest continues loading.
+Use /wq to show or hide the left guide tracker, /wq guides to browse routes, and /wq menu to open the options panel. The minimap button opens the guide tracker.
 
-The route catalog contains 334 synthesized packs based on 585 quest-bearing guide sections parsed from RXP and Zygor Forever sources; 61 packs have coverage from both. This is a generated quest-order catalog, not a copy of the original guide archives. WildQuest does not include their original scripts, prose, or artwork. Fifty-three route quest IDs are absent from the bundled database snapshot and may lack bundled names or details.
+## Data and route coverage
 
-Gear and talent sections are audits/notebooks; they do not yet provide stat-weight upgrades or talent build recommendations. Recipe planning, market history, and map arrows are also not included. This is an alpha and has not been verified in the WoW Forever client in this session.
+The private route catalog contains 334 synthesized packs based on 585 quest-bearing sections parsed from RXP and Zygor Forever sources, with both-source coverage in 61 packs. It stores ordered quest IDs and WildQuest-generated metadata; it does not include the original guide scripts, prose, or artwork. Fifty-three route IDs are absent from the bundled database snapshot.
 
-The full database and generated route catalog are kept out of public GitHub because the QuestieDB archive notes historical contributions with unclear redistribution rights. Do not redistribute the personal ZIP.
+The source archives are not copied into this public repository. The uploaded QuestieDB archive notes that some historical contributions may have unclear redistribution rights. The private build is for the owner's personal use; do not redistribute it.
+
+## Other tools and limits
+
+WildQuest also includes quest tracking, XP observations, gear audit, talent snapshots, wallet/session tracking, an Auction House scan when the client exposes the required API, and profession skill display. Stat-weight upgrades, talent build recommendations, recipe planning, market history, and map overlays beyond the destination arrow are not included. The alpha.12 layout and arrow have not yet been verified in the WoW client.
 
 See [standalone architecture](research/architecture/standalone-addon-design.md) and [source manifest](research/library-source-manifest.md).

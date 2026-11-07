@@ -1,36 +1,39 @@
 # WildQuest standalone architecture
 
-## Product goal
+## Questing UI
 
-WildQuest is a self-contained WoW Forever quest tracker, leveling/dungeon guide, and character helper. It operates with WildQuest alone enabled. Quest facts, route records, and persisted preferences are stored in WildQuest. The game supplies live quest, equipment, talent, money, auction, and profession state through native APIs. No third-party addon or runtime library is queried.
+The UI is split into independent windows modeled on common guide-addon workflows, implemented with original WildQuest code:
 
-## Route synthesis
+1. The left guide tracker shows the active route, current step, live objective progress, and step controls.
+2. A draggable quick-button strip sits above the guide tracker. It opens the step's quest-item detail and toggles the destination tracker.
+3. A movable destination arrow displays a heading and distance for the current task when client position and map data are available.
+4. A separate right-side options window contains the route library and character tools.
 
-The uploaded archive's route data was parsed as quest-action sequences and player availability metadata. From 104 source Lua files, WildQuest derived 585 quest-bearing guide blocks and compiled them into 334 zone/activity packs covering 3,347 distinct quest IDs. Sixty-one packs combine both RXP and Zygor route coverage. For each combined pack, WildQuest compares source sequence completeness against its bundled quest facts and AND-prerequisite ordering. Strongly agreeing paths are blended by shared quest order; conflicting paths use the higher-scoring source sequence as the base, then merge compatible extra quests. The pack stores quest IDs and WildQuest-generated metadata only. It does not store source route text or scripts.
+The compact guide tracker is the default entry point. /wq guides opens the route browser; /wq menu opens the complete options window. The minimap button opens the compact tracker.
 
-The data snapshot does not contain 53 route quest IDs. These remain in guide order but lack bundled titles/facts unless the player's quest log supplies them. Level/race/class conditions from some source guides are not fully normalized yet; the route browser filters faction and level, while quest-level gates remain visible.
+## Navigation data and behavior
 
-## Runtime layout
+The private install package includes an area-to-UI-map lookup extracted from the uploaded Forever database snapshot. WildQuest maps bundled NPC/object spawn coordinates to the client's map IDs. For an inactive quest it points at a quest starter; for an active quest it points at the first incomplete objective with a known creature, object, item-drop, or event coordinate; for a completed quest it points at a turn-in. When the map or coordinates are unavailable, the arrow reports the destination zone or unavailable state rather than inventing a direction.
 
-1. `Data/QuestDB.lua` loads the local bundled quest/NPC/object/item facts before the provider. The public repository has a blank placeholder; the private install replaces it with the full dataset.
-2. `Data/GuidePacks.lua` loads WildQuest-generated guide records. The public placeholder is empty; the private install includes the route catalog.
-3. `Core/Provider.lua` is WildQuest's internal fact lookup. It never probes other addons or contract APIs.
-4. `Core/QuestState.lua` reads the current quest log and client completion flags/events. History is scoped per character.
-5. `Guide/Packs.lua` registers the bundled guide catalog. `Guide/Runtime.lua` follows pack steps against quest state and persists the selected guide/step.
-6. `UI/Tracker.lua` provides a wide tabbed window for home, quests, guides, current guide, gear, talents, gold/AH, and professions.
+Player position and facing are read through the client's C_Map and unit APIs. The arrow hides its directional sprite when map-coordinate conversion is unavailable. The quick strip's target button controls the movable arrow.
 
-## Prerequisites and safe catch-up
+## Private data and route synthesis
 
-- `preQuestSingle` is OR: any one confirmed completed quest is sufficient.
-- `preQuestGroup` is AND: each listed prerequisite is required.
-- `parentQuest` means the parent must be active; `availableStartingWith`, `availableUntilCompleted`, `disabledByQuest`, and exclusive quests remain separate constraints.
-- Other gates include faction, race/class, level, profession, reputation, spell, specialization, and required source items.
-- Unknown history is never inferred complete. `/wq route` starts with active quests; manual guide navigation does not rewrite completion state.
+The private data package contains normalized quest facts and generated quest-order records. The public repository keeps those data files empty. QuestieDB's upload warns some historic contributions may not have explicit redistribution rights, and RXP/Zygor guide scripts, prose, and artwork are not copied.
 
-## Zygor-style feature areas
+The route catalog has 334 synthesized packs built from 585 quest-bearing guide sections; 61 packs include coverage from both RXP and Zygor. It records ID order, source concordance, and WildQuest metadata rather than full narrative instructions. Fifty-three route quest IDs lack facts in the bundled database snapshot.
 
-WildQuest uses an original navigation and content layout rather than Zygor assets or copied UI code. The current alpha includes an equipment audit, saved talent snapshot, current-money/session tracker, click-to-scan Auction House price lookup, and profession skill display. A complete recipe planner, defensible stat weights/upgrade recommendations, talent build advisor, persistent market trend database, and full route arrow/map overlay remain future work and need verified Forever-specific data/APIs.
+## Runtime and prerequisites
 
-## Publication boundary
+WildQuest loads its own quest, entity, route, and private map lookup data. No Questie or QuestieDB addon is required or queried.
 
-Public GitHub contains runtime code, provenance notes, and high-level coverage counts. The private install package contains normalized quest facts and generated route-order data. The uploaded QuestieDB license warns that some historic contributions may not have explicit redistribution rights; RXP declares CC BY-NC-SA 4.0; Zygor source content must not be copied. Keep original guide prose, scripts, and assets out of WildQuest.
+- preQuestSingle is OR: any one confirmed completed quest is sufficient.
+- preQuestGroup is AND: all listed quests are required.
+- parentQuest, level, faction, race, class, profession, reputation, and item conditions remain distinct.
+- Unknown quest history is never inferred complete. Catch-up route generation starts from the active quest log.
+
+## Feature scope
+
+The options window includes route browsing, live quest tracking, XP observations, a gear audit, saved talent snapshots, wallet/session tracking, conditional Auction House search, and profession skill display. Full stat-weight advice, talent builds, recipe planning, persistent market trends, full route text, and full map overlays remain outside this alpha.
+
+No WoW Forever client verification has been performed for alpha.12.

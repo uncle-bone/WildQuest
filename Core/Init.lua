@@ -1,7 +1,7 @@
 local addonName, ns = ...
 
 ns.name = addonName
-ns.version = "0.1.0-alpha.11"
+ns.version = "0.1.0-alpha.12"
 ns.initialized = false
 
 function ns:Print(message)
@@ -49,7 +49,14 @@ function ns:Initialize()
 
     WildQuestDB = type(WildQuestDB) == "table" and WildQuestDB or {}
     WildQuestDB.profile = type(WildQuestDB.profile) == "table" and WildQuestDB.profile or {}
-    WildQuestDB.profile.trackerShown = WildQuestDB.profile.trackerShown ~= false
+    if WildQuestDB.profile.guideLayoutVersion ~= 1 then
+        WildQuestDB.profile.trackerShown = false
+        WildQuestDB.profile.guidePaneShown = true
+        WildQuestDB.profile.quickPaneShown = true
+        WildQuestDB.profile.guideLayoutVersion = 1
+    end
+    if WildQuestDB.profile.trackerShown == nil then WildQuestDB.profile.trackerShown = false end
+    if WildQuestDB.profile.guidePaneShown == nil then WildQuestDB.profile.guidePaneShown = true end
     if WildQuestDB.profile.minimapShown == nil then WildQuestDB.profile.minimapShown = true end
 
     self.Provider:Initialize()
@@ -60,9 +67,12 @@ function ns:Initialize()
     self.Auction:Initialize()
     self.GuideRuntime:Initialize()
     self.Tracker:Initialize()
+    self.TrackerArrow:Initialize()
+    self.GuidePane:Initialize()
     self.MinimapButton:Initialize()
     self.initialized = true
     self.Tracker:Refresh()
+    self.GuidePane:Refresh()
 
     self:Print("WildQuest " .. self.version .. " loaded. Use /wq help for commands.")
 end
@@ -93,6 +103,7 @@ function ns:HandleEvent(event, ...)
     self.QuestState:HandleEvent(event, ...)
     self.GuideRuntime:HandleEvent(event, ...)
     self.Tracker:Refresh()
+    self.GuidePane:Refresh()
 end
 
 local eventFrame = CreateFrame("Frame")
@@ -151,11 +162,16 @@ SlashCmdList.WILDQUEST = function(message)
         end
         ns.Tracker:SetPage("guides")
         ns.Tracker.frame:Show()
+        ns.GuidePane:Show()
+        WildQuestDB.profile.trackerShown = true
+    elseif command == "menu" then
+        ns.Tracker:SetPage("overview")
+        ns.Tracker.frame:Show()
         WildQuestDB.profile.trackerShown = true
     elseif command == "route" then
         local ok, err = ns.GuideRuntime:BuildQuestLogRoute()
         ns:Print(ok and "built route from your active quest log." or err)
-        if ok then ns.Tracker:OpenGuide() end
+        if ok then ns.GuidePane:Show() end
     elseif command == "minimap" then
         local shown = WildQuestDB.profile.minimapShown ~= false
         ns.MinimapButton:SetShown(not shown)
@@ -177,7 +193,7 @@ SlashCmdList.WILDQUEST = function(message)
         end
         local ok, err = ns.GuideRuntime:TrackQuest(questID)
         ns:Print(ok and ("tracking quest " .. tostring(questID) .. ".") or err)
-        ns.Tracker:OpenGuide()
+        ns.GuidePane:Show()
     elseif command == "select" then
         local ok, err = ns.GuideRuntime:SelectGuide(argument)
         ns:Print(ok and ("selected guide " .. argument .. ".") or err)
@@ -191,7 +207,7 @@ SlashCmdList.WILDQUEST = function(message)
         ns:Print(ok and "guide progress reset." or err)
         ns.Tracker:Refresh()
     else
-        ns.Tracker:Toggle()
+        ns.GuidePane:Toggle()
     end
 end
 
