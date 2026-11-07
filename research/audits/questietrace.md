@@ -42,6 +42,38 @@ The export UI locks the destination URL field, uses a single-line box because th
 
 No automatic network upload call was found in the inspected export/trace path. The intended handoff is copy/paste to the web page. This is a static source finding, not a live network capture or verification of the website's server behavior.
 
+## Tracker module inventory
+
+The Forever TOC loads these first-party trackers before the capture controller. The table records each module's observed domain; exact samples depend on supported client APIs and change-detection logic.
+
+| Module | Captured domain / mechanism |
+|---|---|
+| PlayerIdentity | Character identity context used by the local trace and export scrubber |
+| UnitLevel | Player/unit level observations |
+| Position | Current map/position and explored-map data, sampled on relevant events/timer |
+| Loot | Loot open/close and safe probes of loot slots/API results |
+| Merchant | Merchant open/close and item-list/API observations |
+| ItemCount | Carried item counts, collected from known item IDs with delayed rescans |
+| Reputation | Faction rows and reputation values |
+| QuestLog | Quest log rows, quest state/objectives, rewards and direct quest API probes; delayed follow-up probes cover removed/invalidated quests |
+| CompletedQuests | Completed quest IDs from modern and legacy APIs |
+| QuestPOI | Quest map points across maps |
+| QuestDialog | Gossip/quest dialog options, flags, offered quests and quest-item details, sampled around dialog events |
+| UnitInteraction | Available/active gossip quests, interaction state and selected nameplate/unit observations |
+| GameObject | Game-object identity/data from tooltip processing |
+| UnitState | Unit names/subnames and state obtained from tooltip/API paths |
+| GroupState | Group roster/world state |
+| SkillLines | Skill lines, profession data and trade-skill records |
+| SpellBook | Spellbook snapshots and incremental known-spell changes |
+| ResetTime | Daily reset timing/calendar observations |
+| Display | Display-related values recorded only when changed |
+| PlayerProgress | Experience/level/progress functions sampled at change points |
+| ItemInfo | Item metadata cache/API results associated with observed item requests |
+| FrameHeartbeat | Frame heartbeat/timing context for trace interpretation |
+| Dumps/MapHierarchy | On-demand map hierarchy dump; registered as a diagnostic dump, not a continuous world database |
+
+Together, these trackers explain why consent text says quest progress, positions and loot: the actual local event/func streams also cover inventory, professions, spells, reputation, map exploration, NPC interactions and display context. The capture should therefore be treated as detailed behavioral telemetry even though the export pipeline scrubs selected identity fields.
+
 ## WildQuest application
 
 If WildQuest adds diagnostics, use a narrower opt-in schema tied to a specific issue. Show capture state, field list, retention and export destination. Sanitize before persistence, not only before export; provide preview and explicit copy/share; never send in the background. Keep normal addon operation independent from diagnostics. Do not treat trace data as canonical world facts until reviewed and independently corroborated.
