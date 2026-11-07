@@ -171,7 +171,8 @@ function ns.QuestState:IsQuestTurnedIn(questID)
     end
 
     if type(C_QuestLog) == "table" and type(C_QuestLog.IsQuestFlaggedCompleted) == "function" then
-        return SafeCall(C_QuestLog.IsQuestFlaggedCompleted, questID) == true
+        local completed = SafeCall(C_QuestLog.IsQuestFlaggedCompleted, questID)
+        return completed == true or completed == 1
     end
     return false
 end
