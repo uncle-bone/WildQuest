@@ -24,6 +24,7 @@ The goal is to learn their architecture and identify compatible patterns for an 
 - [Questie and QuestieDB audit](audits/questie-questiedb.md)
 - [Questie runtime and database module map](audits/questie-runtime-map.md)
 - [RestedXP and Zygor runtime comparison](audits/guide-runtime-comparison.md)
+- [Uploaded route-set inventory and architecture](audits/route-data-architecture.md)
 - [QuestieTrace audit](audits/questietrace.md)
 - [WildQuest design map](architecture/wildquest-design-map.md)
 - [Source manifest and update protocol](sources.md)
