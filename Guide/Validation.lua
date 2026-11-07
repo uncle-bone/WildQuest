@@ -1,6 +1,7 @@
 local _, ns = ...
 
 ns.Guides = ns.Guides or {}
+ns.GuideValidation = ns.GuideValidation or {}
 
 local function IsPositiveInteger(value)
     return type(value) == "number" and value > 0 and value == math.floor(value)
