@@ -138,3 +138,4 @@ function ns.QuestState:IsObjectiveComplete(questID, objectiveIndex, requiredCoun
     if not objective then return false end
     return objective.finished or objective.fulfilled >= requiredCount
 end
+

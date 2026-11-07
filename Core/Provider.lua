@@ -94,6 +94,8 @@ function ns.Provider:GetQuestDetails(questID)
         startedBy = quest.startedBy,
         finishedBy = quest.finishedBy,
         objectivesText = quest.objectivesText,
+        objectives = quest.objectives,
+        triggerEnd = quest.triggerEnd,
     }
 end
 
@@ -108,6 +110,37 @@ function ns.Provider:GetQuestGiverLocations(questID, finishing)
     return result
 end
 
+
+local raceIDs = { Human=1, Orc=2, Dwarf=3, NightElf=4, Scourge=5, Tauren=6, Gnome=7,
+    Troll=8, BloodElf=10, Draenei=11 }
+local classIDs = { WARRIOR=1, PALADIN=2, HUNTER=3, ROGUE=4, PRIEST=5,
+    DEATHKNIGHT=6, SHAMAN=7, MAGE=8, WARLOCK=9, DRUID=11 }
+local function MaskContains(mask, id)
+    mask, id = tonumber(mask), tonumber(id)
+    if not mask or not id or mask <= 0 then return nil end
+    return math.floor(mask / (2 ^ (id - 1))) % 2 == 1
+end
+function ns.Provider:GetCharacterAvailability(questID)
+    local quest = self:GetQuestRecord(questID)
+    if not quest then return nil, "quest facts are unavailable" end
+    local raceToken, classToken
+    if type(UnitRace) == "function" then local _, token = UnitRace("player"); raceToken = token end
+    if type(UnitClass) == "function" then local _, token = UnitClass("player"); classToken = token end
+    local raceAllowed = MaskContains(quest.requiredRaces, raceIDs[raceToken])
+    local classAllowed = MaskContains(quest.requiredClasses, classIDs[classToken])
+    if raceAllowed == false then return false, "race restriction" end
+    if classAllowed == false then return false, "class restriction" end
+    if quest.requiredLevel and UnitLevel and UnitLevel("player") < quest.requiredLevel then
+        return false, "below required level"
+    end
+    if raceAllowed == nil and tonumber(quest.requiredRaces) and tonumber(quest.requiredRaces) > 0 then
+        return nil, "race requirement is not recognized by this client"
+    end
+    if classAllowed == nil and tonumber(quest.requiredClasses) and tonumber(quest.requiredClasses) > 0 then
+        return nil, "class requirement is not recognized by this client"
+    end
+    return true, "requirements appear satisfied"
+end
 function ns.Provider:GetQuestPrerequisiteState(questID)
     local quest = self:GetQuestRecord(questID)
     if not quest then return nil end
@@ -123,4 +156,6 @@ function ns.Provider:GetQuestPrerequisiteState(questID)
         exclusiveTo = quest.exclusiveTo,
     }
 end
+
+
 

@@ -88,3 +88,4 @@ function ns.MinimapButton:SetShown(shown)
     if not self.button then return end
     SetShown(shown)
 end
+

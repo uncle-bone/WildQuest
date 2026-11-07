@@ -1,0 +1,3 @@
+local _, ns = ...
+-- The public source omits the personal merged route catalog.
+ns.BundledGuidePacks = ns.BundledGuidePacks or {}

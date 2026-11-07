@@ -1,7 +1,7 @@
 local addonName, ns = ...
 
 ns.name = addonName
-ns.version = "0.1.0-alpha.9"
+ns.version = "0.1.0-alpha.10"
 ns.initialized = false
 
 function ns:Print(message)
@@ -40,7 +40,7 @@ local function PrintQuestList()
     for _, quest in ipairs(quests) do
         local title = quest.title or ns.Provider:GetQuestName(quest.id) or ("Quest " .. tostring(quest.id))
         local state = quest.isReady and "ready to turn in" or "in progress"
-        ns:Print("[" .. tostring(quest.id) .. "] " .. title .. " - " .. state)
+        ns:Print("[" .. tostring(quest.id) .. "] " .. title .. " — " .. state)
     end
 end
 
@@ -55,7 +55,10 @@ function ns:Initialize()
     self.initialized = true
     self.Provider:Initialize()
     self.QuestState:Initialize()
+    self.GuidePacks:Initialize()
     self.XPObserver:Initialize()
+    self.Gold:Initialize()
+    self.Auction:Initialize()
     self.GuideRuntime:Initialize()
     self.Tracker:Initialize()
     self.MinimapButton:Initialize()
@@ -85,6 +88,8 @@ function ns:HandleEvent(event, ...)
 
     if event == "PLAYER_ENTERING_WORLD" then self.Provider:Initialize() end
     self.XPObserver:HandleEvent(event, ...)
+    self.Gold:HandleEvent(event, ...)
+    self.Auction:HandleEvent(event, ...)
     self.QuestState:HandleEvent(event, ...)
     self.GuideRuntime:HandleEvent(event, ...)
     self.Tracker:Refresh()
@@ -98,23 +103,21 @@ eventFrame:SetScript("OnEvent", function(_, event, ...)
 end)
 
 local function PrintGuides()
-    local ids = {}
-    for id in pairs(ns.Guides) do ids[#ids + 1] = id end
-    table.sort(ids)
-    if #ids == 0 then
-        ns:Print("no authored route packs are included yet. Track a live quest with /wq quest <ID or exact title>.")
-        return
-    end
-    ns:Print("available guides: " .. table.concat(ids, ", "))
+    local counts = {}
+    for _, pack in pairs(ns.GuidePacks.byID) do counts[pack.category] = (counts[pack.category] or 0) + 1 end
+    local labels = {}
+    for category, count in pairs(counts) do labels[#labels + 1] = category .. " " .. count end
+    table.sort(labels)
+    ns:Print("open WildQuest and choose Guides. " .. #labels .. " categories: " .. table.concat(labels, ", "))
 end
 
 local function PrintHelp()
-    ns:Print("/wq - show or hide tracker | /wq status | /wq quests | /wq guides")
-    ns:Print("/wq quest <ID or exact title> - build a tracker guide from an active quest")
-    ns:Print("/wq next - manually advance | /wq reset - reset selected guide | /wq select <guide ID>")
-    ns:Print("/wq dungeon - show current location or dungeon | /wq xp - show XP observations")
-    ns:Print("/wq route - build a catch-up route from your active quests using bundled route coverage")
-    ns:Print("/wq minimap - show or hide the minimap button")
+    ns:Print("/wq — show or hide tracker | /wq status | /wq quests | /wq guides")
+    ns:Print("/wq quest <ID or exact title> — build a tracker guide from an active quest")
+    ns:Print("/wq next — manually advance | /wq reset — reset selected guide | /wq select <guide ID>")
+    ns:Print("/wq dungeon — show current location or dungeon | /wq xp — show XP observations")
+    ns:Print("/wq route — build a catch-up route from your active quests using bundled route coverage")
+    ns:Print("/wq minimap — show or hide the minimap button")
 end
 
 SLASH_WILDQUEST1 = "/wildquest"
@@ -142,7 +145,9 @@ SlashCmdList.WILDQUEST = function(message)
         ns:Print("Combat XP chat: +" .. xp.combatTextXP .. " across " .. xp.combatTextEvents .. " messages.")
         ns:Print("Latest observation: " .. xp.lastObservation .. ". Gray status/no-XP decisions are not inferred.")
     elseif command == "guides" then
-        PrintGuides()
+        ns.Tracker:SetPage("guides")
+        ns.Tracker.frame:Show()
+        WildQuestDB.profile.trackerShown = true
     elseif command == "route" then
         local ok, err = ns.GuideRuntime:BuildQuestLogRoute()
         ns:Print(ok and "built route from your active quest log." or err)
@@ -185,6 +190,7 @@ SlashCmdList.WILDQUEST = function(message)
         ns.Tracker:Toggle()
     end
 end
+
 
 
 

@@ -25,4 +25,3 @@ function ns.RouteSourceCoverage:GetAgreement(id)
     if rxpMatch or zygorMatch then return 1 end
     return 0
 end
-

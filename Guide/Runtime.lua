@@ -326,3 +326,4 @@ function ns.GuideRuntime:GetProgressText()
     end
     return "Goals: " .. complete .. "/" .. #step.goals
 end
+

@@ -80,3 +80,4 @@ function ns.XPObserver:GetSummary()
         level = type(UnitLevel) == "function" and UnitLevel("player") or 0,
     }
 end
+

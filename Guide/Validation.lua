@@ -132,3 +132,4 @@ function ns:RegisterGuide(definition)
     self.Guides[guide.id] = guide
     return true
 end
+
