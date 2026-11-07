@@ -22,7 +22,7 @@ local function GetDungeonContext()
     if type(GetInstanceInfo) ~= "function" then
         return "Instance information unavailable"
     end
-    local name, _, difficulty, _, _, _, _, instanceType = GetInstanceInfo()
+    local name, instanceType, difficulty = GetInstanceInfo()
     if instanceType == "party" then
         return "Dungeon: " .. tostring(name or "unknown") .. " (difficulty " .. tostring(difficulty or "?") .. ")"
     elseif instanceType == "raid" then
@@ -45,9 +45,7 @@ local function PrintQuestList()
 end
 
 function ns:Initialize()
-    if self.initialized then
-        return
-    end
+    if self.initialized then return end
 
     WildQuestDB = type(WildQuestDB) == "table" and WildQuestDB or {}
     WildQuestDB.profile = type(WildQuestDB.profile) == "table" and WildQuestDB.profile or {}
@@ -81,9 +79,7 @@ function ns:HandleEvent(event, ...)
         return
     end
 
-    if not self.initialized then
-        return
-    end
+    if not self.initialized then return end
 
     self.XPObserver:HandleEvent(event, ...)
     self.QuestState:HandleEvent(event, ...)
@@ -100,9 +96,7 @@ end)
 
 local function PrintGuides()
     local ids = {}
-    for id in pairs(ns.Guides) do
-        ids[#ids + 1] = id
-    end
+    for id in pairs(ns.Guides) do ids[#ids + 1] = id end
     table.sort(ids)
     if #ids == 0 then
         ns:Print("no authored route packs are included yet. Track a live quest with /wq quest <ID or exact title>.")

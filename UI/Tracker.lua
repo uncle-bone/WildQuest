@@ -7,7 +7,7 @@ ns.Tracker = {
 
 local function CurrentLocation()
     if type(GetInstanceInfo) == "function" then
-        local name, _, difficulty, _, _, _, _, instanceType = GetInstanceInfo()
+        local name, instanceType, difficulty = GetInstanceInfo()
         if instanceType == "party" then
             return "Dungeon: " .. tostring(name or "unknown") .. " (" .. tostring(difficulty or "?") .. ")"
         elseif instanceType == "raid" then
@@ -84,9 +84,7 @@ function ns.Tracker:Refresh()
 
     lines[#lines + 1] = ""
     lines[#lines + 1] = "ACTIVE QUESTS"
-    if #quests == 0 then
-        lines[#lines + 1] = "No quests in the log."
-    end
+    if #quests == 0 then lines[#lines + 1] = "No quests in the log." end
 
     local shown = math.min(#quests, 7)
     for index = 1, shown do
