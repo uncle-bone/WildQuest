@@ -10,6 +10,8 @@ WildQuest is a WoW Forever addon project. This repository begins with source aud
 - [Questie and QuestieDB audit](research/audits/questie-questiedb.md)
 - [QuestieTrace audit](research/audits/questietrace.md)
 - [WildQuest architecture proposal](research/architecture/wildquest-design-map.md)
+- [Detailed Questie runtime/database map](research/audits/questie-runtime-map.md)
+- [RestedXP and Zygor runtime comparison](research/audits/guide-runtime-comparison.md)
 - [Source manifest, fingerprints, and update protocol](research/sources.md)
 
 The audits describe the uploaded builds. They are research, not claims that WildQuest contains or is derived from any reference addon. Third-party archives, guide text, artwork, and database payloads are deliberately not mirrored here. See each audit for observed license/provenance limits.
