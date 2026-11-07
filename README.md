@@ -4,6 +4,8 @@ WildQuest is a standalone WoW Forever questing addon (client 1.60.1 / interface 
 
 ## Current personal build: 0.1.0-alpha.12
 
+[Download the owner-only install ZIP](https://chatgpt.com/library?file_id=libfile_fd77ecb4bb648191bcd702ee556ff538&account_id=personal).
+
 The private install ZIP includes the bundled database and generated route catalog. This public repository contains only the runtime code and empty private-data placeholders.
 
 ## Questing layout
