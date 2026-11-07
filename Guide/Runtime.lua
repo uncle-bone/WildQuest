@@ -27,7 +27,9 @@ function ns.GuideRuntime:Initialize()
 
     if guide then
         self.currentGuideID = guideID
-        if guide.stepIndexes[characterDB.currentStepID] then
+        if characterDB.currentStepID == nil then
+            self.currentStepID = nil
+        elseif guide.stepIndexes[characterDB.currentStepID] then
             self.currentStepID = characterDB.currentStepID
         else
             self.currentStepID = guide.steps[1].id
