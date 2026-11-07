@@ -1,28 +1,32 @@
 # WildQuest source inputs
 
-The archives below are research inputs, not runtime dependencies. Do not copy third-party guide prose or the full QuestieDB-derived database into this public repository; the private install package contains generated route order and normalized data for the owner's personal use.
+The uploads below are research inputs, not runtime dependencies. The public repository contains original WildQuest runtime code and empty placeholders for private data. The personal install package includes the generated quest facts, route order, and navigation map lookup.
 
 | Input | Library file ID | Purpose |
 |---|---|---|
-| Questie-RXPGuides-Zygor.zip | `libfile_d60485d843508191b998bc12868d09a4` | Combined source archive used for quest facts and route coverage |
-| QuestieDB archive | `libfile_8a8635c339c08191998e2ce8e6cf197c` | Quest metadata and prerequisite research |
-| RXPGuides archive | `libfile_8a25af7bcb9881919d58a986af654f1f` | Route coverage research |
-| Zygor Forever archive | `libfile_f0a57ab9b6d08191a98b13d6e315b11c` | Route coverage research |
-| Latest combined archive | `libfile_cf9acd9e6bbc8191802cd16159699708` | Uploaded Questie/RXP/Zygor archive used for extraction |
-| Private extraction bundle | `libfile_2d370265601c8191b69c71e42c8ec802` | Normalized facts, source inventory, and parsed route coverage |
-| WildQuest alpha.9 personal build | `libfile_5830706f3aec81918d6e73f4dfb6b8fb` | Earlier standalone build |
-| WildQuest alpha.10 personal build | `libfile_23413ff3e8dc81919b7c23f98e911ac2` | Previous standalone install ZIP |\n| WildQuest alpha.11 personal build | `libfile_34c18d0f92288191b1d771b200788911` | Current startup-fix install ZIP; owner Library only |
+| Combined Questie/RXP/Zygor archive | libfile_d60485d843508191b998bc12868d09a4 | Quest facts and route coverage research |
+| QuestieDB archive | libfile_8a8635c339c08191998e2ce8e6cf197c | Quest metadata and prerequisites |
+| RXPGuides archive | libfile_8a25af7bcb9881919d58a986af654f1f | Route coverage research |
+| Zygor Forever archive | libfile_f0a57ab9b6d08191a98b13d6e315b11c | Route coverage research |
+| Latest combined archive | libfile_cf9acd9e6bbc8191802cd16159699708 | Combined source ZIP used for extraction |
+| Private extraction bundle | libfile_2d370265601c8191b69c71e42c8ec802 | Normalized facts, source inventory, and route-ID coverage |
+| WildQuest alpha.9 ZIP | libfile_5830706f3aec81918d6e73f4dfb6b8fb | Earlier standalone build |
+| WildQuest alpha.10 ZIP | libfile_23413ff3e8dc81919b7c23f98e911ac2 | Earlier standalone build |
+| WildQuest alpha.11 ZIP | libfile_34c18d0f92288191b1d771b200788911 | Auction event/startup fix |
+| WildQuest alpha.12 ZIP | libfile_fd77ecb4bb648191bcd702ee556ff538 | Split guide tracker, quick buttons, options panel, and destination arrow |
 
-## Extracted input summary
+## Extracted research
 
-The combined archive contained Questie/QuestieDB, RXP Guides, and Zygor Forever data. The normalized Forever snapshot contains 5,233 quests, 13,417 NPCs, 7,045 objects, and 21,442 items. Parsed route coverage included 22 RXP Forever files (2,691 unique quest-action IDs) and 19 Zygor guide files (2,726 unique IDs), with 2,293 IDs shared. These are source coverage counts, not proof of route quality.
+The normalized Forever database contains 5,233 quests, 13,417 NPCs, 7,045 objects, and 21,442 items. Parsed route coverage included 22 RXP Forever files (2,691 unique quest-action IDs) and 19 Zygor guide files (2,726 unique IDs), with 2,293 IDs shared. These are coverage counts, not a validation of route correctness.
 
-WildQuest alpha.11 contains 334 synthesized route packs derived from 585 quest-bearing guide blocks and 3,347 distinct route quest IDs. Sixty-one packs include both-source coverage. The catalog covers leveling, dungeons, events, professions, and reputations. It stores quest ordering and WildQuest-generated metadata, not source scripts or prose. Fifty-three route IDs are missing from the normalized database snapshot and may be shown without bundled facts.
+Alpha.12 contains 334 synthesized route packs based on 585 quest-bearing guide sections and 3,347 distinct route quest IDs. Sixty-one packs include route coverage from both sources. Fifty-three route IDs are not present in the normalized quest database snapshot. The packs store quest order and WildQuest-generated metadata, not original route scripts or prose.
 
-## Distribution boundary
+## Rights and distribution boundary
 
-The public repository contains the runtime code and empty data placeholders. The personal alpha.10 ZIP includes the private generated quest facts and route ordering. It is not attached to a public GitHub release because the uploaded QuestieDB archive notes historic contributions with unclear redistribution rights; RXP declares CC BY-NC-SA 4.0, and Zygor content is not copied.
+The uploaded QuestieDB archive notes historic contributions whose redistribution rights may be unclear. RXP declares CC BY-NC-SA 4.0, and Zygor guide content is not copied. The full normalized facts and generated route/map data are therefore kept out of this public repository. The personal ZIP is not attached as a public GitHub release.
 
-## Product scope
+## Scope
 
-Alpha.11 removes the Questie/QuestieDB runtime dependency. It includes route browsing/tracking, live objectives and prerequisite details, gear audit, talent snapshots, wallet/session tracking, an Auction House search snapshot, and profession skill display. These character tools are a foundation, not full Zygor-equivalent stat-weight, talent-planning, recipe, or market-history systems. The addon has not been verified in the WoW Forever client in this session.
+Alpha.12 adds the three-window questing layout: compact route tracker and detachable quick controls on the left, movable destination arrow, and route/options panel on the right. Navigation uses bundled NPC/object/item-drop coordinates and an area-to-UI-map lookup. When the map or coordinate APIs do not provide a usable target, the arrow shows the zone or unavailable state.
+
+The private build remains an alpha and has not been verified in the WoW Forever client in this session.
