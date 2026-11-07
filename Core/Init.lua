@@ -1,7 +1,7 @@
 local addonName, ns = ...
 
 ns.name = addonName
-ns.version = "0.1.0-alpha.6"
+ns.version = "0.1.0-alpha.7"
 ns.initialized = false
 
 function ns:Print(message)
@@ -112,6 +112,7 @@ local function PrintHelp()
     ns:Print("/wq quest <ID or exact title> — build a tracker guide from an active quest")
     ns:Print("/wq next — manually advance | /wq reset — reset selected guide | /wq select <guide ID>")
     ns:Print("/wq dungeon — show current location or dungeon | /wq xp — show XP observations")
+    ns:Print("/wq route — build a catch-up route from your active quests using RXP/Zygor coverage")
     ns:Print("/wq minimap — show or hide the minimap button")
 end
 
@@ -141,6 +142,10 @@ SlashCmdList.WILDQUEST = function(message)
         ns:Print("Latest observation: " .. xp.lastObservation .. ". Gray status/no-XP decisions are not inferred.")
     elseif command == "guides" then
         PrintGuides()
+    elseif command == "route" then
+        local ok, err = ns.GuideRuntime:BuildQuestLogRoute()
+        ns:Print(ok and "built route from your active quest log." or err)
+        if ok then ns.Tracker:OpenGuide() end
     elseif command == "minimap" then
         local shown = WildQuestDB.profile.minimapShown ~= false
         ns.MinimapButton:SetShown(not shown)

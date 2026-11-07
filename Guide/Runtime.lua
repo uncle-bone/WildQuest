@@ -135,6 +135,78 @@ function ns.GuideRuntime:TrackQuest(questID)
     return self:SelectGuide(guideID)
 end
 
+function ns.GuideRuntime:BuildQuestLogRoute()
+    local active = ns.QuestState:GetActiveQuests()
+    if #active == 0 then return false, "accept quests first; no active quests are available to route." end
+
+    local playerLevel = tonumber(UnitLevel and UnitLevel("player")) or 1
+    local ordered = {}
+    for _, quest in ipairs(active) do
+        local details = ns.Provider:GetQuestDetails(quest.id)
+        local questLevel = tonumber(details and details.questLevel) or playerLevel
+        ordered[#ordered + 1] = {
+            quest = quest,
+            level = questLevel,
+            agreement = ns.RouteSourceCoverage and ns.RouteSourceCoverage:GetAgreement(quest.id) or 0,
+            ready = quest.isReady and 1 or 0,
+        }
+    end
+    table.sort(ordered, function(a, b)
+        if a.ready ~= b.ready then return a.ready > b.ready end
+        if a.agreement ~= b.agreement then return a.agreement > b.agreement end
+        local aDistance, bDistance = math.abs(a.level - playerLevel), math.abs(b.level - playerLevel)
+        if aDistance ~= bDistance then return aDistance < bDistance end
+        return a.quest.id < b.quest.id
+    end)
+
+    local steps = {}
+    for _, entry in ipairs(ordered) do
+        local quest = entry.quest
+        local title = quest.title or ns.Provider:GetQuestName(quest.id) or ("Quest " .. quest.id)
+        local sourceLabel = entry.agreement == 2 and "RXP + Zygor coverage"
+            or (entry.agreement == 1 and "single guide-source coverage" or "QuestieDB quest-log data")
+        local hasObjective = false
+        for index, objective in ipairs(quest.objectives or {}) do
+            hasObjective = true
+            steps[#steps + 1] = {
+                id = "q" .. quest.id .. "-o" .. index,
+                text = title .. ": " .. (objective.text or ("complete objective " .. index))
+                    .. " (" .. sourceLabel .. ")",
+                goals = {
+                    { type = "objective", questID = quest.id, index = index,
+                        count = tonumber(objective.required) or 1 },
+                },
+            }
+        end
+        if not hasObjective then
+            steps[#steps + 1] = {
+                id = "q" .. quest.id .. "-ready",
+                text = title .. ": complete the quest objectives (" .. sourceLabel .. ").",
+                goals = { { type = "quest_ready", questID = quest.id } },
+            }
+        end
+        steps[#steps + 1] = {
+            id = "q" .. quest.id .. "-turnin",
+            text = "Turn in " .. title .. " (" .. sourceLabel .. ").",
+            goals = { { type = "quest_turned_in", questID = quest.id } },
+        }
+    end
+
+    local routeID = "active-quest-route"
+    local definition = {
+        id = routeID,
+        title = "Active Quest Route",
+        version = "generated-1",
+        flavor = "forever",
+        steps = steps,
+    }
+    ns.Guides[routeID] = nil
+    local registered, err = ns:RegisterGuide(definition)
+    if not registered then return false, err end
+    ns:GetCharacterDB().generatedGuide = definition
+    return self:SelectGuide(routeID)
+end
+
 function ns.GuideRuntime:GetCurrentGuide()
     return self.currentGuideID and ns.Guides[self.currentGuideID] or nil
 end
