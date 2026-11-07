@@ -1,12 +1,12 @@
 ## Interface: 16001
 ## Title: WildQuest
-## Notes: Quest and guide tracker for WoW Forever
+## Notes: Standalone quest and guide tracker for WoW Forever
 ## Author: Uncle Bone
-## Version: 0.1.0-alpha.8
-## OptionalDeps: Questie, QuestieDB
+## Version: 0.1.0-alpha.9
 ## SavedVariables: WildQuestDB
 ## X-Game-Type: camelot
 
+Data/QuestDB.lua
 Core/Provider.lua
 Core/QuestState.lua
 Core/XPObserver.lua
@@ -16,3 +16,4 @@ Guide/Runtime.lua
 UI/Tracker.lua
 UI/MinimapButton.lua
 Core/Init.lua
+
