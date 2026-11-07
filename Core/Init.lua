@@ -1,7 +1,7 @@
 local addonName, ns = ...
 
 ns.name = addonName
-ns.version = "0.1.0-alpha.7"
+ns.version = "0.1.0-alpha.8"
 ns.initialized = false
 
 function ns:Print(message)
@@ -83,6 +83,7 @@ function ns:HandleEvent(event, ...)
 
     if not self.initialized then return end
 
+    if event == "PLAYER_ENTERING_WORLD" then self.Provider:Initialize() end
     self.XPObserver:HandleEvent(event, ...)
     self.QuestState:HandleEvent(event, ...)
     self.GuideRuntime:HandleEvent(event, ...)

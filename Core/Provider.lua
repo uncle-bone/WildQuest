@@ -8,14 +8,43 @@ local function ReadField(entity, id, key)
     if ok then return value end
 end
 
+local function AddonIsLoaded(name)
+    if type(IsAddOnLoaded) == "function" then
+        local ok, loaded = pcall(IsAddOnLoaded, name)
+        if ok then return loaded == true end
+    end
+    if type(C_AddOns) == "table" and type(C_AddOns.IsAddOnLoaded) == "function" then
+        local ok, loaded = pcall(C_AddOns.IsAddOnLoaded, name)
+        if ok then return loaded == true end
+    end
+    return false
+end
+
 function ns.Provider:Initialize()
     local library = _G.LibQuestieDB
-    if type(library) ~= "table" then self.status = "not detected"; return end
-    if type(library.RequireContract) ~= "function" then self.status = "incompatible API"; return end
+    if type(library) ~= "table" then
+        self.library = nil
+        if AddonIsLoaded("QuestieDB") then
+            self.status = "QuestieDB loaded, API unavailable (check Questie initialization)"
+        elseif AddonIsLoaded("Questie") then
+            self.status = "Questie loaded, QuestieDB not loaded"
+        else
+            self.status = "not loaded (enable Questie and QuestieDB)"
+        end
+        return false
+    end
+    if type(library.RequireContract) ~= "function" then
+        self.library, self.status = nil, "incompatible API"
+        return false
+    end
     local ok, supported = pcall(library.RequireContract, 4)
-    if not ok or not supported then self.status = "incompatible contract"; return end
+    if not ok or not supported then
+        self.library, self.status = nil, "incompatible contract (need QuestieDB contract 4)"
+        return false
+    end
     self.library, self.contract = library, library.contractVersion
     self.status = "connected (contract " .. tostring(self.contract or "?") .. ")"
+    return true
 end
 
 function ns.Provider:GetStatus() return self.status end
