@@ -2,7 +2,7 @@
 
 ## Audited package
 
-The uploaded package contains three folders: Questie, QuestieDB, and QuestieTrace. Forever TOCs target interface 16001. Questie reports v12.6.3; QuestieDB reports v1.0.12, contract 4, Forever flavor, baked mode, build commit 4d31c10394b11bd133069ecf1662062cdf4d8691. Archive fingerprint is in [sources.md](../sources.md).
+The uploaded package contains three folders: Questie, QuestieDB, and QuestieTrace. Forever TOCs target interface 16001. Questie reports v12.6.3, TOC build commit fc60e5600c2ca1c2878880bbf3d732233a60d2d5; QuestieDB reports v1.0.12, contract 4, Forever flavor, baked mode, build commit 4d31c10394b11bd133069ecf1662062cdf4d8691. The database TOC embeds build time 2023-11-14T22:13:20Z, so do not infer database freshness from the Questie addon version. See [detailed Questie runtime/DB map](questie-runtime-map.md) and [coverage counts](../audit-coverage.md). Archive fingerprint is in [sources.md](../sources.md).
 
 QuestieDB's Forever TOC is a generated baked dataset with runtime loader/API and embedded entity metadata. A raw identifier-prefix count in this uploaded TOC found 5,233 quest IDs, 13,417 NPC IDs, 21,442 item IDs and 7,045 object IDs. These are inventory counts only; they do not prove rows are complete, correct or usable in every context.
 
