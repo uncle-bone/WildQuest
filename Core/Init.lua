@@ -1,7 +1,7 @@
 local addonName, ns = ...
 
 ns.name = addonName
-ns.version = "0.1.0-alpha.5"
+ns.version = "0.1.0-alpha.6"
 ns.initialized = false
 
 function ns:Print(message)
@@ -50,6 +50,7 @@ function ns:Initialize()
     WildQuestDB = type(WildQuestDB) == "table" and WildQuestDB or {}
     WildQuestDB.profile = type(WildQuestDB.profile) == "table" and WildQuestDB.profile or {}
     WildQuestDB.profile.trackerShown = WildQuestDB.profile.trackerShown ~= false
+    if WildQuestDB.profile.minimapShown == nil then WildQuestDB.profile.minimapShown = true end
 
     self.initialized = true
     self.Provider:Initialize()
@@ -57,6 +58,7 @@ function ns:Initialize()
     self.XPObserver:Initialize()
     self.GuideRuntime:Initialize()
     self.Tracker:Initialize()
+    self.MinimapButton:Initialize()
     self.Tracker:Refresh()
 
     self:Print("WildQuest " .. self.version .. " loaded. Use /wq help for commands.")
@@ -110,6 +112,7 @@ local function PrintHelp()
     ns:Print("/wq quest <ID or exact title> — build a tracker guide from an active quest")
     ns:Print("/wq next — manually advance | /wq reset — reset selected guide | /wq select <guide ID>")
     ns:Print("/wq dungeon — show current location or dungeon | /wq xp — show XP observations")
+    ns:Print("/wq minimap — show or hide the minimap button")
 end
 
 SLASH_WILDQUEST1 = "/wildquest"
@@ -138,6 +141,10 @@ SlashCmdList.WILDQUEST = function(message)
         ns:Print("Latest observation: " .. xp.lastObservation .. ". Gray status/no-XP decisions are not inferred.")
     elseif command == "guides" then
         PrintGuides()
+    elseif command == "minimap" then
+        local shown = WildQuestDB.profile.minimapShown ~= false
+        ns.MinimapButton:SetShown(not shown)
+        ns:Print(not shown and "minimap button shown." or "minimap button hidden.")
     elseif command == "quest" then
         local questID = tonumber(argument)
         if not questID then

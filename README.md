@@ -2,13 +2,15 @@
 
 WildQuest is a questing addon for WoW Forever, informed by research into RestedXP, Zygor Forever, Questie, QuestieDB, and QuestieTrace.
 
-## Live-test build: 0.1.0-alpha.5
+## Live-test build: 0.1.0-alpha.6
 
-The in-game window has **My Quests** and **Guide** pages. Click an active quest to create and open an objective-by-objective guide from the live quest log. The guide tracks quest state, shows progress, and supports manual previous/next controls. When QuestieDB contract 4 is available, the guide can also show quest levels, prerequisite IDs, and quest-giver coordinates. The objective list and level-aware route suggestions use the character's current state. The panel shows world or dungeon context.
+The in-game window has **My Quests** and **Guide** pages. Click an active quest to create and open an objective-by-objective guide from the live quest log. The guide tracks quest state, shows progress, and supports manual previous/next controls. When QuestieDB contract 4 is available, the guide can also show quest levels, prerequisite IDs, and quest-giver coordinates. The panel shows world or dungeon context.
+
+A draggable WildQuest minimap button opens and closes the tracker. Left-click opens the tracker, right-click hides the button, and `/wq minimap` toggles it back on or off. The button is shown by default.
 
 XP bar changes are tracked as unattributed XP; combat XP chat messages are tallied separately. WildQuest does not infer that a gray quest or mob gives no XP.
 
-This remains an early alpha, not a 1.0.0 release. It does not yet include authored leveling/dungeon route packs, a complete character-specific prerequisite evaluator, map pins/navigation, or automatic safe skipping. Reference addon routes are being used to shape original WildQuest data and runtime behavior; their guide scripts and prose are not copied into this repository. WoW Forever client behavior still needs live verification.
+This remains an early alpha, not a 1.0.0 release. The current build does not yet include authored leveling/dungeon route packs, a complete character-specific prerequisite evaluator, map pins/navigation, or automatic safe skipping. RXP and Zygor route structures and coverage are being used to shape original WildQuest routes; their guide scripts and prose are not copied into this repository. QuestieDB is used as an optional source of quest metadata and prerequisite facts. WoW Forever client behavior still needs live verification.
 
 ## Install
 
