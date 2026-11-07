@@ -39,3 +39,18 @@ For each new build:
 - Zygor: https://zygorguides.com/
 - Questie: https://github.com/Questie/Questie
 - QuestieDB: https://github.com/Questie/QuestieDB
+
+
+## Additional sources supplied 2026-11-07
+
+The following uploads are registered for research. The new ZIPs were not byte-hashed or exhaustively inspected internally in this pass; the rights notes below are based on the public project listings. Archive-level TOCs and per-file/data notices remain to be audited.
+
+| Source | User Library reference or URL | Project metadata and use |
+|---|---|---|
+| LevelForge addon and studio | https://levelforge.dev/ | Website and CurseForge listing reviewed. v0.1.22 is listed for Forever 1.60.1 under MIT. Candidate foundation; acquire and audit exact source package before porting. |
+| LevelForge community guides | https://levelforge.dev/restedxp | Site lists 1–60 Forever Alliance and Horde chains, says catalog guides are free to read/import/copy/change, and keeps author identity visible. Preserve author and guide-version attribution; inspect individual guide credits. |
+| FlowUp | `FlowUp-1.0.18.zip`; libfile_53330905a0488191b1c4eec3d284e881 | User-supplied Forever route addon. Project listing states GPLv3. Verify exact upload version and any separate route-data terms. |
+| ForeverQuest | `ForeverQuest-0.21.0.zip`; libfile_cf2a19440fbc8191a5989b9f1a75b82a | User-supplied Forever 1.60.1 quest helper. Project listing states All Rights Reserved; feature reference only absent permission. |
+| Forever Guide by LFYZ | `ForeverGuide-1.38.5.zip`; libfile_32b430ac2fd88191962c780a0a05df0a | User-supplied large Forever reference/quest addon. Project listing states All Rights Reserved. It is not the similarly named MIT class-guide project. |
+
+See [the foundation review](audits/leveling-addon-foundation-review.md) for feature comparison, rights boundaries, and the proposed adoption sequence.
