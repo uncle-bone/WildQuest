@@ -26,7 +26,10 @@ local function ValidateGoal(goal, stepID, goalIndex)
     local clean = { type = goal.type }
 
     if goal.type == "manual" then
-        clean.text = IsString(goal.text or "", 300) and (goal.text or "") or ""
+        if goal.text ~= nil and not IsString(goal.text, 300) then
+            return nil, "step " .. stepID .. " manual goal " .. goalIndex .. " text must be 300 characters or fewer"
+        end
+        clean.text = goal.text or ""
     elseif goal.type == "quest_active" or goal.type == "quest_ready" or goal.type == "quest_turned_in" then
         if not IsPositiveInteger(goal.questID) then
             return nil, "step " .. stepID .. " goal " .. goalIndex .. " needs a positive questID"
@@ -60,10 +63,15 @@ function ns.GuideValidation:Validate(definition)
         return nil, "guide must contain 1 to 500 ordered steps"
     end
 
+    local version = definition.version or "1"
+    if not IsString(version, 40) or version == "" then
+        return nil, "guide version is required and must be 40 characters or fewer"
+    end
+
     local normalized = {
         id = definition.id,
         title = definition.title,
-        version = IsString(definition.version or "1", 40) and (definition.version or "1") or "1",
+        version = version,
         flavor = definition.flavor or "forever",
         steps = {},
         stepIndexes = {},
