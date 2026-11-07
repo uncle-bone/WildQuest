@@ -1,11 +1,21 @@
 local _, ns = ...
-ns.Auction = { pending = false, query = "", results = {}, lastMessage = "Enter an item name, open the Auction House, then scan." }
+ns.Auction = { pending = false, query = "", results = {}, eventAvailable = false,
+    lastMessage = "Enter an item name, open the Auction House, then scan." }
 function ns.Auction:Initialize()
-    ns.EventFrame:RegisterEvent("AUCTION_ITEM_LIST_UPDATE")
+    local frame = ns.EventFrame
+    if frame and type(frame.RegisterEvent) == "function" then
+        self.eventAvailable = pcall(frame.RegisterEvent, frame, "AUCTION_ITEM_LIST_UPDATE")
+    end
+    if not self.eventAvailable then
+        self.lastMessage = "Auction House scanning is unavailable: this client does not support AUCTION_ITEM_LIST_UPDATE."
+    end
 end
 function ns.Auction:Scan(query)
     query = tostring(query or ""):match("^%s*(.-)%s*$")
     if query == "" then return false, "enter an item name to search" end
+    if not self.eventAvailable then
+        return false, "Auction House result events are unavailable on this client build"
+    end
     if type(QueryAuctionItems) ~= "function" then
         return false, "Auction House search is not exposed by this client build"
     end
