@@ -157,6 +157,22 @@ function ns.QuestState:IsQuestActive(questID)
     return self:FindActiveQuest(questID) ~= nil
 end
 
+function ns.QuestState:FindActiveQuestsByName(name)
+    local matches = {}
+    local target = string.lower(name or "")
+    if target == "" then
+        return matches
+    end
+
+    for _, quest in ipairs(self.activeQuests) do
+        local title = quest.title or ns.Provider:GetQuestName(quest.id)
+        if type(title) == "string" and string.lower(title) == target then
+            matches[#matches + 1] = quest
+        end
+    end
+    return matches
+end
+
 function ns.QuestState:IsQuestReady(questID)
     local quest = self:FindActiveQuest(questID)
     if quest and quest.isReady then
