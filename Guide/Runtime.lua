@@ -20,6 +20,36 @@ local function GetNextStep(guide, stepID)
     return nextStep and nextStep.id or nil
 end
 
+local function StepQuestID(step)
+    for _, goal in ipairs(step and step.goals or {}) do
+        local questID = tonumber(goal.questID)
+        if questID then return questID end
+    end
+    local fromID = tostring(step and step.id or ""):match("^q(%d+)")
+    return tonumber(fromID)
+end
+
+function ns.GuideRuntime:FindActiveQuestStep(guide)
+    if not guide then return nil end
+    for _, step in ipairs(guide.steps) do
+        local questID = StepQuestID(step)
+        if questID and ns.QuestState:IsQuestActive(questID) and not self:IsStepComplete(step) then
+            return step
+        end
+    end
+end
+
+function ns.GuideRuntime:GetRouteProgress()
+    local guide = self:GetCurrentGuide()
+    if not guide then return 0, 0, 0 end
+    local complete = 0
+    for _, step in ipairs(guide.steps) do
+        if self:IsStepComplete(step) then complete = complete + 1 end
+    end
+    local current = self.currentStepID and guide.stepIndexes[self.currentStepID] or #guide.steps
+    return complete, #guide.steps, current
+end
+
 function ns.GuideRuntime:Initialize()
     local characterDB = ns:GetCharacterDB()
     if type(characterDB.generatedGuide) == "table" then
@@ -52,12 +82,19 @@ end
 
 function ns.GuideRuntime:SelectGuide(guideID)
     local guide = ns.Guides[guideID]
-    if not guide then
-        return false, "guide not found"
-    end
+    if not guide then return false, "guide not found" end
 
     self.currentGuideID = guideID
-    self.currentStepID = guide.steps[1].id
+
+    -- Resume from the earliest uncompleted step for an active quest in this
+    -- guide. This uses the live quest log, so starting a guide mid-chain does
+    -- not force the player to replay its opening steps.
+    local activeStep = self:FindActiveQuestStep(guide)
+    if activeStep then
+        self.currentStepID = activeStep.id
+    else
+        self.currentStepID = guide.steps[1] and guide.steps[1].id
+    end
     SaveProgress(self)
     self:Evaluate()
     return true
@@ -271,6 +308,30 @@ function ns.GuideRuntime:Evaluate()
     end
 
     SaveProgress(self)
+end
+
+function ns.GuideRuntime:JumpToActiveQuest()
+    local guide = self:GetCurrentGuide()
+    if not guide then return false, "select a guide first" end
+    local step = self:FindActiveQuestStep(guide)
+    if not step then
+        return false, "none of this guide's unfinished quests are in your quest log"
+    end
+    self.currentStepID = step.id
+    self:Evaluate()
+    return true
+end
+
+function ns.GuideRuntime:SelectStepNumber(number)
+    local guide = self:GetCurrentGuide()
+    number = tonumber(number)
+    if not guide then return false, "select a guide first" end
+    if not number or number < 1 or number > #guide.steps or number ~= math.floor(number) then
+        return false, "step number must be between 1 and " .. #guide.steps
+    end
+    self.currentStepID = guide.steps[number].id
+    SaveProgress(self)
+    return true
 end
 
 function ns.GuideRuntime:NextStep()
