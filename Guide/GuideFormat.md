@@ -48,6 +48,14 @@ ns:RegisterGuide({
 })
 ~~~
 
+## Generated active-quest guide
+
+Use /wq quest <active quest ID> to create a temporary guide for a quest already in the log. It builds one goal step per objective exposed by the client, then a turn-in step. If objective details are unavailable, it falls back to a quest-ready step. The guide uses the native quest title/objective text when available and can query QuestieDB for a missing title.
+
+Generated guides are in-memory registrations; they are not persisted as definitions. The selected generated guide ID and step ID are persisted per character. After reload, a generated definition is not present, so the saved selection is cleared safely until a new generated guide is created. Objective schemas vary by quest/client; generated steps remain advisory and may require /wq next when the client does not expose a completion count.
+
+This feature is not a replacement for authored leveling routes. It exercises the guide engine against live quest-log state without embedding QuestieDB rows or copying third-party guide text.
+
 ## Validation rules
 
 - Guide IDs and step IDs: 1–80 characters using letters, digits, dot, underscore, or hyphen.
