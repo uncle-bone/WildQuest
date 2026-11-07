@@ -106,28 +106,35 @@ function ns.GuidePane:Initialize()
     self.statusText:SetWidth(320)
     self.statusText:SetJustifyH("LEFT")
 
-    self.previous = Button(frame, 72, "< Prev", function()
+    self.previous = Button(frame, 54, "< Prev", function()
         local ok, err = ns.GuideRuntime:PreviousStep()
         if not ok then ns:Print(err) end
         self:Refresh()
     end)
     self.previous:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 10, 8)
 
-    self.next = Button(frame, 72, "Next >", function()
+    self.next = Button(frame, 54, "Next >", function()
         local ok, err = ns.GuideRuntime:NextStep()
         if not ok then ns:Print(err) end
         self:Refresh()
     end)
     self.next:SetPoint("LEFT", self.previous, "RIGHT", 5, 0)
 
-    self.browse = Button(frame, 84, "Guides", function()
+    self.here = Button(frame, 54, "Here", function()
+        local ok, err = ns.GuideRuntime:JumpToActiveQuest()
+        if not ok then ns:Print(err) end
+        self:Refresh()
+    end)
+    self.here:SetPoint("LEFT", self.next, "RIGHT", 4, 0)
+
+    self.browse = Button(frame, 68, "Guides", function()
         ns.Tracker:SetPage("guides")
         ns.Tracker.frame:Show()
         WildQuestDB.profile.trackerShown = true
     end)
-    self.browse:SetPoint("LEFT", self.next, "RIGHT", 5, 0)
+    self.browse:SetPoint("LEFT", self.here, "RIGHT", 4, 0)
 
-    self.options = Button(frame, 92, "Options", function()
+    self.options = Button(frame, 72, "Options", function()
         ns.Tracker:SetPage("overview")
         ns.Tracker.frame:Show()
         WildQuestDB.profile.trackerShown = true
@@ -205,7 +212,9 @@ function ns.GuidePane:Refresh()
     end
 
     local stepNumber = guide.stepIndexes[step.id] or 1
-    self.routeText:SetText(guide.title .. "  -  Step " .. stepNumber .. "/" .. #guide.steps)
+    local confirmed, total = ns.GuideRuntime:GetRouteProgress()
+    self.routeText:SetText(guide.title .. "  -  Step " .. stepNumber .. "/" .. #guide.steps
+        .. "  |  " .. confirmed .. " confirmed complete")
     local questID, objectiveIndex = CurrentStepQuest(guide, step)
     local active = questID and ns.QuestState:FindActiveQuest(questID)
     local questName = questID and (ns.Provider:GetQuestName(questID) or ("Quest " .. questID))
