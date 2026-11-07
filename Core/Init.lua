@@ -106,9 +106,21 @@ SlashCmdList.WILDQUEST = function(message)
         end
         local questID = tonumber(argument)
         if not questID then
-            ns:Print("usage: /wq quest <active quest ID>")
-            return
+            local matches = ns.QuestState:FindActiveQuestsByName(argument)
+            if #matches == 0 then
+                ns:Print("quest not found. Use an active quest ID or exact quest title.")
+                return
+            elseif #matches > 1 then
+                local ids = {}
+                for _, quest in ipairs(matches) do
+                    ids[#ids + 1] = tostring(quest.id)
+                end
+                ns:Print("multiple active quests match; use one of these IDs: " .. table.concat(ids, ", "))
+                return
+            end
+            questID = matches[1].id
         end
+
         local ok, err = ns.GuideRuntime:TrackQuest(questID)
         ns:Print(ok and ("tracking quest " .. tostring(questID) .. ".") or err)
         ns.Tracker:Refresh()
