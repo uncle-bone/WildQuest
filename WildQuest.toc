@@ -10,5 +10,6 @@
 Core/Init.lua
 Core/Provider.lua
 Core/QuestState.lua
+Guide/Validation.lua
 Guide/Runtime.lua
 UI/Tracker.lua
