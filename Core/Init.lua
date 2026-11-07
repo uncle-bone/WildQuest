@@ -1,7 +1,7 @@
 local addonName, ns = ...
 
 ns.name = addonName
-ns.version = "0.1.0-alpha.8"
+ns.version = "0.1.0-alpha.9"
 ns.initialized = false
 
 function ns:Print(message)
@@ -40,7 +40,7 @@ local function PrintQuestList()
     for _, quest in ipairs(quests) do
         local title = quest.title or ns.Provider:GetQuestName(quest.id) or ("Quest " .. tostring(quest.id))
         local state = quest.isReady and "ready to turn in" or "in progress"
-        ns:Print("[" .. tostring(quest.id) .. "] " .. title .. " — " .. state)
+        ns:Print("[" .. tostring(quest.id) .. "] " .. title .. " - " .. state)
     end
 end
 
@@ -109,12 +109,12 @@ local function PrintGuides()
 end
 
 local function PrintHelp()
-    ns:Print("/wq — show or hide tracker | /wq status | /wq quests | /wq guides")
-    ns:Print("/wq quest <ID or exact title> — build a tracker guide from an active quest")
-    ns:Print("/wq next — manually advance | /wq reset — reset selected guide | /wq select <guide ID>")
-    ns:Print("/wq dungeon — show current location or dungeon | /wq xp — show XP observations")
-    ns:Print("/wq route — build a catch-up route from your active quests using RXP/Zygor coverage")
-    ns:Print("/wq minimap — show or hide the minimap button")
+    ns:Print("/wq - show or hide tracker | /wq status | /wq quests | /wq guides")
+    ns:Print("/wq quest <ID or exact title> - build a tracker guide from an active quest")
+    ns:Print("/wq next - manually advance | /wq reset - reset selected guide | /wq select <guide ID>")
+    ns:Print("/wq dungeon - show current location or dungeon | /wq xp - show XP observations")
+    ns:Print("/wq route - build a catch-up route from your active quests using bundled route coverage")
+    ns:Print("/wq minimap - show or hide the minimap button")
 end
 
 SLASH_WILDQUEST1 = "/wildquest"
@@ -130,7 +130,7 @@ SlashCmdList.WILDQUEST = function(message)
     elseif command == "status" then
         local xp = ns.XPObserver:GetSummary()
         ns:Print(tostring(UnitLevel and UnitLevel("player") or "?") .. " level; "
-            .. ns.QuestState:GetActiveCount() .. " active quests; QuestieDB " .. ns.Provider:GetStatus() .. ".")
+            .. ns.QuestState:GetActiveCount() .. " active quests; WildQuest data " .. ns.Provider:GetStatus() .. ".")
         ns:Print("XP this session: +" .. xp.sessionDelta .. " observed, source unknown.")
     elseif command == "quests" then
         PrintQuestList()
@@ -185,3 +185,6 @@ SlashCmdList.WILDQUEST = function(message)
         ns.Tracker:Toggle()
     end
 end
+
+
+
