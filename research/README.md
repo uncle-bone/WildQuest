@@ -10,6 +10,10 @@ The goal is to learn their architecture and identify compatible patterns for an 
 
 | System | Main responsibility | WildQuest research takeaway |
 |---|---|---|
+| LevelForge | MIT addon and guide studio; step tracking, catch-up, waypoint arrow, guide imports | Best candidate base to inspect; preserve MIT notice and guide-author attribution. |
+| FlowUp Forever | GPLv3 Forever route addon | Reuse only if WildQuest accepts GPLv3 obligations; inspect exact uploaded route-data notices. |
+| ForeverQuest | Forever quest tracker and map guidance; All Rights Reserved | Use feature behavior as reference; no source/data copying without permission. |
+| Forever Guide (LFYZ) | Forever quest/dungeon/item/profession reference database; All Rights Reserved | Feature/data coverage research only; no copying without permission. |
 | RestedXP | Guide DSL/runtime, event-driven objectives, saved progression, map/arrow, guide sharing | A declarative step runtime and objective model are useful patterns. Implement an original DSL and event layer. |
 | Zygor Forever | Guide/step/goal runtime, route/waypoint UI, quest tracking, Forever-specific quest-chain and travel modules | Guide → Step → Goal lifecycle is a strong model. Keep route computation separate from objective tracking. |
 | Questie | Player-facing quest/map features consuming QuestieDB | Separate static facts from player-specific eligibility, progress, and display decisions. |
