@@ -131,6 +131,7 @@ function ns.GuideRuntime:TrackQuest(questID)
         ns:GetCharacterDB().generatedGuide = definition
     end
 
+    if self.currentGuideID == guideID then return true end
     return self:SelectGuide(guideID)
 end
 
@@ -207,6 +208,16 @@ function ns.GuideRuntime:NextStep()
     end
 
     self.currentStepID = GetNextStep(guide, self.currentStepID)
+    SaveProgress(self)
+    return true
+end
+
+function ns.GuideRuntime:PreviousStep()
+    local guide = self:GetCurrentGuide()
+    if not guide or not self.currentStepID then return false, "no active step" end
+    local index = guide.stepIndexes[self.currentStepID]
+    if not index or index <= 1 then return false, "already at the first step" end
+    self.currentStepID = guide.steps[index - 1].id
     SaveProgress(self)
     return true
 end

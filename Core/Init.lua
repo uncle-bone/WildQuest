@@ -1,7 +1,7 @@
 local addonName, ns = ...
 
 ns.name = addonName
-ns.version = "0.1.0-alpha.4"
+ns.version = "0.1.0-alpha.5"
 ns.initialized = false
 
 function ns:Print(message)
@@ -155,7 +155,7 @@ SlashCmdList.WILDQUEST = function(message)
         end
         local ok, err = ns.GuideRuntime:TrackQuest(questID)
         ns:Print(ok and ("tracking quest " .. tostring(questID) .. ".") or err)
-        ns.Tracker:Refresh()
+        ns.Tracker:OpenGuide()
     elseif command == "select" then
         local ok, err = ns.GuideRuntime:SelectGuide(argument)
         ns:Print(ok and ("selected guide " .. argument .. ".") or err)
