@@ -43,7 +43,7 @@ local function ReadModernObjectives(questID)
                 text = objective.text,
                 fulfilled = tonumber(objective.numFulfilled) or 0,
                 required = tonumber(objective.numRequired) or 1,
-                finished = objective.finished == true,
+                finished = objective.finished == true or objective.finished == 1,
             }
         end
     end
@@ -61,7 +61,7 @@ local function ReadLegacyObjectives(questLogIndex)
         local text, _, finished = GetQuestLogLeaderBoard(index, questLogIndex)
         objectives[index] = {
             text = text,
-            fulfilled = finished and 1 or 0,
+            fulfilled = (finished == true or finished == 1) and 1 or 0,
             required = 1,
             finished = finished == true or finished == 1,
         }
