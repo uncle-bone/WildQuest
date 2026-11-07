@@ -74,7 +74,7 @@ function ns.Tracker:Initialize()
 
     local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -13)
-    title:SetText("|cff67d5ffWildQuest|r  |cffaaaaaaalpha.10|r")
+    title:SetText("|cff67d5ffWildQuest|r  |cffaaaaaaalpha.11|r")
     self.locationText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     self.locationText:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
 
