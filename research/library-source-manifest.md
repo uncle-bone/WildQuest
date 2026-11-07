@@ -19,7 +19,11 @@ The uploads below are research inputs, not runtime dependencies. The public repo
 | Forever Guide 1.38.5 ZIP (LFYZ) | libfile_32b430ac2fd88191962c780a0a05df0a | New user-provided reference/database addon; All Rights Reserved |
 | LevelForge website | https://levelforge.dev/ | Candidate foundation research; addon MIT; Forever guide catalog and studio |
 
-## New source review\n\nSee [Leveling addon foundation review](audits/leveling-addon-foundation-review.md) for licensing distinctions, capability comparison, and adoption plan. New package hashes and internal archive inventories remain pending.\n\n## Extracted research
+## New source review
+
+See [Leveling addon foundation review](audits/leveling-addon-foundation-review.md) for licensing distinctions, capability comparison, and adoption plan. New package hashes and internal archive inventories remain pending.
+
+## Extracted research
 
 The normalized Forever database contains 5,233 quests, 13,417 NPCs, 7,045 objects, and 21,442 items. Parsed route coverage included 22 RXP Forever files (2,691 unique quest-action IDs) and 19 Zygor guide files (2,726 unique IDs), with 2,293 IDs shared. These are coverage counts, not a validation of route correctness.
 
