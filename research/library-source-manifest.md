@@ -8,17 +8,18 @@ The source archives below are maintained in the owner's ChatGPT Library. They ar
 | QuestieDB archive | `libfile_8a8635c339c08191998e2ce8e6cf197c` | Quest metadata and prerequisite research |
 | RXPGuides archive | `libfile_8a25af7bcb9881919d58a986af654f1f` | Route coverage research |
 | Zygor Forever archive | `libfile_f0a57ab9b6d08191a98b13d6e315b11c` | Route coverage research |
-| Latest combined archive | `libfile_cf9acd9e6bbc8191802cd16159699708` | Latest uploaded Questie/RXP/Zygor source ZIP, used for the 2026-11-07 extraction |
-| Private extraction bundle | `libfile_2d370265601c8191b69c71e42c8ec802` | Normalized QuestieDB Forever data, source inventory, and parsed route-ID coverage; owner Library only |
+| Latest combined archive | `libfile_cf9acd9e6bbc8191802cd16159699708` | Latest uploaded Questie/RXP/Zygor source ZIP used for extraction |
+| Private extraction bundle | `libfile_2d370265601c8191b69c71e42c8ec802` | Normalized database facts, source inventory, and parsed route-ID coverage |
+| Standalone personal install build | `libfile_5830706f3aec81918d6e73f4dfb6b8fb` | WildQuest alpha.9 with bundled internal quest data; owner Library only |
 
-## 2026-11-07 extraction summary
+## 2026-11-07 extraction and standalone build
 
-The uploaded combined archive contained 2,881 non-empty files across Questie, QuestieDB, QuestieTrace, RXP Guides, and Zygor Forever. QuestieDB Forever v1.0.12 / contract 4 yielded 5,233 quests, 13,417 NPCs, 7,045 objects, and 21,442 items. The route parser found 22 RXP Forever Lua files (2,691 unique quest-action IDs) and 19 Zygor Forever guide files (2,726 unique IDs), with 2,293 IDs shared. These are source-coverage figures, not a validation of guide correctness or complete authored WildQuest routes. Earlier notes used a narrower parser and reported different figures.
+The combined archive contained 2,881 non-empty files across Questie, QuestieDB, QuestieTrace, RXP Guides, and Zygor Forever. QuestieDB Forever v1.0.12 / contract 4 yielded 5,233 quests, 13,417 NPCs, 7,045 objects, and 21,442 items. Parsed route coverage: 22 RXP Forever files (2,691 unique quest-action IDs), 19 Zygor Forever files (2,726 unique IDs), and 2,293 IDs shared. These counts indicate source coverage, not route correctness or completeness.
 
-The private extraction bundle is not committed here because the QuestieDB archive warns some historical contributions may not have explicit redistribution rights. RXP's archive declares CC BY-NC-SA 4.0; Zygor guide content must not be copied into WildQuest. The public repository records provenance and summary counts only.
+WildQuest alpha.9 removes Questie/QuestieDB from OptionalDeps and the runtime provider. The addon now reads from its own bundled Lua data. The public repository includes a blank database placeholder; the private install build replaces that file with the full normalized Forever data.
 
-## Runtime requirement
+The full dataset is kept out of public GitHub because the QuestieDB archive warns that some historical contributions may lack explicit redistribution rights. RXP declares CC BY-NC-SA 4.0. No RXP/Zygor route scripts or prose are copied.
 
-WildQuest's goal is all-in-one and must not require Questie or QuestieDB to be loaded. Quest data included in WildQuest must be independently packaged and must not require these external addons at runtime. Until a distributable, provenance-reviewed data bundle and complete authored guides are available, do not claim full quest database coverage or complete authored routes.
+## Remaining development
 
-Route-ID coverage may inform original WildQuest-authored content. Do not copy source route scripts or prose verbatim.
+The standalone runtime/data packaging is in place, but authored leveling and dungeon route packs, safe player-confirmed catch-up overrides, chain-aware route selection and skips, and useful map navigation still need implementation. Do not describe this alpha as a complete guide product or live verified.
