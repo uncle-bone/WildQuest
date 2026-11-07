@@ -2,7 +2,7 @@
 
 WildQuest is a standalone questing and character helper for WoW Forever (client 1.60.1 / interface 16001). It uses WildQuest's own packaged data and the game's live APIs; it does not require Questie, QuestieDB, or another addon.
 
-## Development build: 0.1.0-alpha.10
+## Current personal build: 0.1.0-alpha.10\n\n[Download the owner-only install ZIP](https://chatgpt.com/library?file_id=libfile_23413ff3e8dc81919b7c23f98e911ac2&account_id=personal). The full data bundle is not published in this public repository.\n
 
 The private install build contains the full bundled Forever quest database: 5,233 quests, 13,417 NPCs, 7,045 objects, and 21,442 items. It includes the redesigned navigation window, live quest tracker, route browser, XP observations, gear audit, talent snapshots, gold tracking, Auction House search, and profession overview.
 
