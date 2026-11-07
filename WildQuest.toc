@@ -3,7 +3,7 @@
 ## Notes: Quest and guide tracker for WoW Forever
 ## Author: Uncle Bone
 ## Version: 0.1.0-alpha.8
-## OptionalDeps: QuestieDB, Questie
+## OptionalDeps: Questie, QuestieDB
 ## SavedVariables: WildQuestDB
 ## X-Game-Type: camelot
 
