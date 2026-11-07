@@ -38,4 +38,4 @@ The source archives are not copied into this public repository. The uploaded Que
 
 WildQuest also includes quest tracking, XP observations, gear audit, talent snapshots, wallet/session tracking, an Auction House scan when the client exposes the required API, and profession skill display. Stat-weight upgrades, talent build recommendations, recipe planning, market history, and map overlays beyond the destination arrow are not included. The alpha.12 layout and arrow have not yet been verified in the WoW client.
 
-See [standalone architecture](research/architecture/standalone-addon-design.md) and [source manifest](research/library-source-manifest.md).
+See the [research index](research/README.md), [LevelForge/addon foundation review](research/audits/leveling-addon-foundation-review.md), [standalone architecture](research/architecture/standalone-addon-design.md), and [source manifest](research/library-source-manifest.md).
