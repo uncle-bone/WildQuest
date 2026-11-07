@@ -67,6 +67,64 @@ function ns.GuideRuntime:Reset()
     return true
 end
 
+function ns.GuideRuntime:TrackQuest(questID)
+    local quest = ns.QuestState:FindActiveQuest(questID)
+    if not quest then
+        return false, "quest is not in your active quest log"
+    end
+
+    local guideID = "quest-" .. tostring(questID)
+    if not ns.Guides[guideID] then
+        local steps = {}
+        for index, objective in ipairs(quest.objectives or {}) do
+            local count = tonumber(objective.required) or 1
+            if count < 1 then
+                count = 1
+            end
+            steps[#steps + 1] = {
+                id = "objective-" .. tostring(index),
+                text = type(objective.text) == "string" and objective.text ~= ""
+                    and objective.text or ("Complete objective " .. tostring(index) .. "."),
+                goals = {
+                    { type = "objective", questID = questID, index = index, count = count },
+                },
+            }
+        end
+
+        if #steps == 0 then
+            steps[#steps + 1] = {
+                id = "quest-ready",
+                text = "Complete the quest objectives.",
+                goals = {
+                    { type = "quest_ready", questID = questID },
+                },
+            }
+        end
+
+        steps[#steps + 1] = {
+            id = "turn-in",
+            text = "Return to the quest giver and turn in the quest.",
+            goals = {
+                { type = "quest_turned_in", questID = questID },
+            },
+        }
+
+        local title = quest.title or ns.Provider:GetQuestName(questID) or ("Quest " .. tostring(questID))
+        local registered, err = ns:RegisterGuide({
+            id = guideID,
+            title = title,
+            version = "generated-1",
+            flavor = "forever",
+            steps = steps,
+        })
+        if not registered then
+            return false, err
+        end
+    end
+
+    return self:SelectGuide(guideID)
+end
+
 function ns.GuideRuntime:GetCurrentGuide()
     return self.currentGuideID and ns.Guides[self.currentGuideID] or nil
 end
