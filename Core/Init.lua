@@ -1,7 +1,7 @@
 local addonName, ns = ...
 
 ns.name = addonName
-ns.version = "0.1.0-alpha.13"
+ns.version = "0.1.0-alpha.14"
 ns.initialized = false
 
 function ns:Print(message)
@@ -125,7 +125,8 @@ end
 local function PrintHelp()
     ns:Print("/wq — show or hide tracker | /wq status | /wq quests | /wq guides")
     ns:Print("/wq quest <ID or exact title> — build a tracker guide from an active quest")
-    ns:Print("/wq next — manually advance | /wq step <number> — jump to a guide step | /wq here — find your active quest")
+    ns:Print("/wq skip (or /wq next) — override this guide step without marking the quest complete")
+    ns:Print("/wq step <number> — jump to a guide step | /wq here — find your active quest")
     ns:Print("/wq reset — reset selected guide | /wq select <guide ID>")
     ns:Print("/wq dungeon — show current location or dungeon | /wq xp — show XP observations")
     ns:Print("/wq route — build a catch-up route from your active quests using bundled route coverage")
@@ -199,9 +200,9 @@ SlashCmdList.WILDQUEST = function(message)
         local ok, err = ns.GuideRuntime:SelectGuide(argument)
         ns:Print(ok and ("selected guide " .. argument .. ".") or err)
         ns.Tracker:Refresh()
-    elseif command == "next" then
-        local ok, err = ns.GuideRuntime:NextStep()
-        ns:Print(ok and "moved to the next step." or err)
+    elseif command == "next" or command == "skip" then
+        local ok, err = ns.GuideRuntime:SkipCurrentStep()
+        ns:Print(ok and "step skipped by your override; quest completion was not recorded." or err)
         ns.Tracker:Refresh()
         ns.GuidePane:Refresh()
     elseif command == "step" then
