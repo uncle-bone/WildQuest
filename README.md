@@ -8,7 +8,9 @@ Alpha.15 adds level-aware catch-up. Active quests in the selected route take pri
 
 The personal install bundle contains a standalone Forever quest database and a 334-pack ordered route index (7,049 quest steps) assembled from the supplied RXP and Zygor route coverage. Route names, quest facts and ordering are generated for WildQuest; third-party prose and scripts are not bundled. The full data payload is intentionally absent from this public repository because its upstream redistribution rights have not been cleared.
 
-See [the Forever guide source inventory](research/forever-guide-source-inventory.md) for available guide archives, additional Forever sources, and the current import status. The current merged catalog is still based on the earlier RXP/Zygor cross-reference; newly supplied FlowUp, ForeverQuest, and ForeverGuide archives have not yet been fully parsed and integrated.\n\n## Included addon features
+See [the Forever guide source inventory](research/forever-guide-source-inventory.md) for available guide archives, additional Forever sources, and the current import status. The current merged catalog is still based on the earlier RXP/Zygor cross-reference; newly supplied FlowUp, ForeverQuest, and ForeverGuide archives have not yet been fully parsed and integrated.
+
+## Included addon features
 
 - Guide browser, compact tracker pane, detachable quick-button pane, minimap access and waypoint arrow
 - Live quest/objective tracking and active-quest catch-up routing
