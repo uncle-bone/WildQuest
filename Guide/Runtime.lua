@@ -90,6 +90,7 @@ function ns.GuideRuntime:GetRouteProgress()
 end
 
 function ns.GuideRuntime:Initialize()
+    ns.EventFrame:RegisterEvent("PLAYER_LEVEL_UP")
     local characterDB = ns:GetCharacterDB()
     if type(characterDB.generatedGuide) == "table" then
         local restored = ns:RegisterGuide(characterDB.generatedGuide)
@@ -109,6 +110,10 @@ function ns.GuideRuntime:Initialize()
             self.currentStepID = characterDB.currentStepID
         else
             self.currentStepID = guide.steps[1].id
+        end
+        if self.currentStepID then
+            local adaptiveStep = self:FindAdaptiveStep(guide)
+            if adaptiveStep then self.currentStepID = adaptiveStep.id end
         end
         SaveProgress(self)
         self:Evaluate()
@@ -357,9 +362,18 @@ function ns.GuideRuntime:Evaluate()
     local advances = 0
     while self.currentStepID and advances < #guide.steps do
         local step = self:GetCurrentStep()
-        if not self:IsStepComplete(step) then
-            break
+        local questID = StepQuestID(step)
+        if questID and not ns.QuestState:IsQuestActive(questID)
+            and ns.Provider:GetQuestLevelStatus(questID) == "gray"
+            and not self:IsStepComplete(step) then
+            local prerequisitesConfirmed = ns.Provider:AreQuestPrerequisitesConfirmed(questID)
+            if prerequisitesConfirmed then
+                GetOverrides(self, guide.id)[step.id] = "auto:gray-level"
+            else
+                break
+            end
         end
+        if not self:IsStepComplete(step) then break end
 
         self.currentStepID = GetNextStep(guide, self.currentStepID)
         advances = advances + 1
@@ -406,7 +420,14 @@ function ns.GuideRuntime:PreviousStep()
     return true
 end
 
-function ns.GuideRuntime:HandleEvent()
+function ns.GuideRuntime:HandleEvent(event)
+    if event == "PLAYER_LEVEL_UP" then
+        local guide = self:GetCurrentGuide()
+        if guide then
+            local adaptiveStep = self:FindAdaptiveStep(guide)
+            if adaptiveStep then self.currentStepID = adaptiveStep.id end
+        end
+    end
     self:Evaluate()
 end
 
