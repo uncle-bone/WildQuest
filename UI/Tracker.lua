@@ -151,10 +151,11 @@ function ns.Tracker:Initialize()
         self:Refresh()
     end)
     self.prevStep:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 20, 18)
-    self.nextStep = MakeButton(frame, 130, 28, "Next step", function()
+    self.nextStep = MakeButton(frame, 130, 28, "Skip step", function()
         local ok, err = ns.GuideRuntime:NextStep()
-        if not ok then ns:Print(err) end
+        if not ok then ns:Print(err) else ns:Print("step skipped by your override; quest completion was not recorded.") end
         self:Refresh()
+        ns.GuidePane:Refresh()
     end)
     self.nextStep:SetPoint("LEFT", self.prevStep, "RIGHT", 8, 0)
     self.backButton = MakeButton(frame, 150, 28, "Back to guides", function() self:SetPage("guides") end)
@@ -273,7 +274,7 @@ function ns.Tracker:RefreshRoutePage()
     local count = #routes
     self.pageText:ClearAllPoints(); self.pageText:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 128, -93); self.pageText:SetWidth(550); self.pageText:SetHeight(28)
     self.pageTitle:SetText("Guide library   -   " .. self.guideCategory .. "   -   " .. count .. " guides")
-    self.pageText:SetText("Pick a guide to start tracking it. Routes combine RXP and Zygor quest ordering where coverage overlaps, then use WildQuest's bundled quest facts and the live quest log.")
+    self.pageText:SetText("Active quests resume first. WildQuest checks quest levels and confirmed OR/AND prerequisites. A grey quest is auto-skipped only when all known chain gates are confirmed complete; uncertain gates stay in the guide for you to resolve.")
     self.prevPage:SetText("Previous guides"); self.nextPage:SetText("More guides")
     if self.routePage > 1 then self.prevPage:Show() else self.prevPage:Hide() end
     if self.routePage < pages then self.nextPage:Show() else self.nextPage:Hide() end
@@ -324,6 +325,14 @@ function ns.Tracker:RefreshGuidePage()
             local allowed, reason = ns.Provider:GetCharacterAvailability(questID)
             if allowed == false then lines[#lines + 1] = "Character gate: " .. tostring(reason) .. " (not auto-skipped)." end
             if details.questLevel and details.questLevel > 0 then lines[#lines + 1] = "Quest level: " .. details.questLevel end
+            local levelStatus, questLevel, playerLevel = ns.Provider:GetQuestLevelStatus(questID)
+            if levelStatus == "gray" then
+                local chainOK, chainReason = ns.Provider:AreQuestPrerequisitesConfirmed(questID)
+                lines[#lines + 1] = "|cffff7777Below your level: quest " .. tostring(questLevel)
+                    .. " is grey at level " .. tostring(playerLevel) .. ". "
+                    .. (chainOK and "Its known chain gates are confirmed; the route can skip it."
+                        or ("It may still gate later quests (" .. tostring(chainReason) .. "). Finish it or use Skip step.")) .. "|r"
+            end
             if details.requiredLevel and details.requiredLevel > 0 then lines[#lines + 1] = "Minimum level: " .. details.requiredLevel end
             for _, objective in ipairs(details.objectivesText or {}) do lines[#lines + 1] = "- " .. tostring(objective) end
             local ors, ands = details.preQuestSingle, details.preQuestGroup

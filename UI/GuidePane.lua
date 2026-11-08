@@ -119,11 +119,18 @@ function ns.GuidePane:Initialize()
     end)
     self.previous:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 10, 8)
 
-    self.next = Button(frame, 54, "Next >", function()
+    self.next = Button(frame, 54, "Skip >", function()
         local ok, err = ns.GuideRuntime:NextStep()
-        if not ok then ns:Print(err) end
+        if not ok then ns:Print(err) else ns:Print("step skipped by your override; quest completion was not recorded.") end
         self:Refresh()
     end)
+    self.next:SetScript("OnEnter", function(button)
+        GameTooltip:SetOwner(button, "ANCHOR_TOP")
+        GameTooltip:SetText("Skip this guide step", 1, 0.82, 0)
+        GameTooltip:AddLine("This is a guide-only override. It does not mark the quest complete.", 1, 1, 1, true)
+        GameTooltip:Show()
+    end)
+    self.next:SetScript("OnLeave", function() GameTooltip:Hide() end)
     self.next:SetPoint("LEFT", self.previous, "RIGHT", 5, 0)
 
     self.here = Button(frame, 54, "Here", function()
@@ -219,9 +226,9 @@ function ns.GuidePane:Refresh()
     end
 
     local stepNumber = guide.stepIndexes[step.id] or 1
-    local confirmed, total = ns.GuideRuntime:GetRouteProgress()
+    local confirmed, _, _, skipped = ns.GuideRuntime:GetRouteProgress()
     self.routeText:SetText(guide.title .. "  -  Step " .. stepNumber .. "/" .. #guide.steps
-        .. "  |  " .. confirmed .. " confirmed complete")
+        .. "  |  " .. confirmed .. " confirmed, " .. skipped .. " skipped")
     local questID, objectiveIndex = CurrentStepQuest(guide, step)
     local active = questID and ns.QuestState:FindActiveQuest(questID)
     local questName = questID and (ns.Provider:GetQuestName(questID) or ("Quest " .. questID))
@@ -237,6 +244,8 @@ function ns.GuidePane:Refresh()
         local marker
         if index == currentIndex then
             marker = "|cff67d5ff[NOW]|r "
+        elseif ns.GuideRuntime:IsStepSkipped(routeStep, guide.id) then
+            marker = "|cffff9d4d[SKIP]|r "
         elseif ns.GuideRuntime:IsStepComplete(routeStep) then
             marker = "|cff70d090[OK]|r "
         else
@@ -271,6 +280,6 @@ function ns.GuidePane:Refresh()
     elseif active then
         self.statusText:SetText("|cffffd060" .. ns.GuideRuntime:GetProgressText() .. "|r")
     else
-        self.statusText:SetText("Accept the quest, then follow its objective steps.")
+        self.statusText:SetText("Accept the quest, or Skip to override guide progress. Skips do not confirm quest history.")
     end
 end

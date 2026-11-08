@@ -99,6 +99,54 @@ function ns.Provider:GetQuestDetails(questID)
     }
 end
 
+function ns.Provider:GetQuestLevelStatus(questID)
+    local quest = self:GetQuestRecord(questID)
+    local questLevel = tonumber(quest and quest.questLevel)
+    local playerLevel = tonumber(UnitLevel and UnitLevel("player"))
+    if not questLevel or questLevel <= 0 or not playerLevel then
+        return "unknown", questLevel, playerLevel
+    end
+    if type(GetQuestDifficultyColor) == "function" then
+        local ok, color = pcall(GetQuestDifficultyColor, questLevel)
+        if ok and type(color) == "table" then
+            local r, g, b = tonumber(color.r), tonumber(color.g), tonumber(color.b)
+            if r and g and b and math.abs(r - g) < 0.035 and math.abs(g - b) < 0.035 then
+                return "gray", questLevel, playerLevel
+            end
+        end
+    end
+    local gap = playerLevel - questLevel
+    if gap >= 6 then return "gray", questLevel, playerLevel end
+    if gap <= -3 then return "above", questLevel, playerLevel end
+    return "level-appropriate", questLevel, playerLevel
+end
+
+function ns.Provider:AreQuestPrerequisitesConfirmed(questID)
+    local quest = self:GetQuestRecord(questID)
+    if not quest then return false, "quest facts unavailable" end
+    local anyOf = quest.preQuestSingle or {}
+    local allOf = quest.preQuestGroup or {}
+    if #anyOf > 0 then
+        local satisfied = false
+        for _, prerequisiteID in ipairs(anyOf) do
+            if ns.QuestState:IsQuestTurnedIn(tonumber(prerequisiteID)) then
+                satisfied = true
+                break
+            end
+        end
+        if not satisfied then return false, "no OR prerequisite is confirmed complete" end
+    end
+    for _, prerequisiteID in ipairs(allOf) do
+        if not ns.QuestState:IsQuestTurnedIn(tonumber(prerequisiteID)) then
+            return false, "an AND prerequisite is not confirmed complete"
+        end
+    end
+    local parentID = tonumber(quest.parentQuest)
+    if parentID and parentID > 0 and not ns.QuestState:IsQuestTurnedIn(parentID) then
+        return false, "parent quest is not confirmed complete"
+    end
+    return true, "all known prerequisites are confirmed complete"
+end
 function ns.Provider:GetQuestGiverLocations(questID, finishing)
     local quest = self:GetQuestRecord(questID)
     local groups = quest and (finishing and quest.finishedBy or quest.startedBy)

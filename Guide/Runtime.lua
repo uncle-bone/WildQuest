@@ -11,6 +11,14 @@ local function SaveProgress(self)
     characterDB.currentStepID = self.currentStepID
 end
 
+local function GetOverrides(self, guideID)
+    local characterDB = ns:GetCharacterDB()
+    characterDB.stepOverrides = type(characterDB.stepOverrides) == "table" and characterDB.stepOverrides or {}
+    characterDB.stepOverrides[guideID] = type(characterDB.stepOverrides[guideID]) == "table"
+        and characterDB.stepOverrides[guideID] or {}
+    return characterDB.stepOverrides[guideID]
+end
+
 local function GetNextStep(guide, stepID)
     local index = guide.stepIndexes[stepID]
     if not index then
@@ -39,18 +47,50 @@ function ns.GuideRuntime:FindActiveQuestStep(guide)
     end
 end
 
+function ns.GuideRuntime:FindAdaptiveStep(guide)
+    if not guide then return nil end
+    local activeStep = self:FindActiveQuestStep(guide)
+    if activeStep then return activeStep end
+    local overrides = GetOverrides(self, guide.id)
+    for _, step in ipairs(guide.steps or {}) do
+        if not self:IsStepComplete(step) then
+            local questID = StepQuestID(step)
+            if questID then
+                local levelStatus = ns.Provider:GetQuestLevelStatus(questID)
+                if levelStatus == "gray" then
+                    local prerequisitesConfirmed = ns.Provider:AreQuestPrerequisitesConfirmed(questID)
+                    if prerequisitesConfirmed then
+                        overrides[step.id] = "auto:gray-level"
+                    else
+                        return step
+                    end
+                else
+                    return step
+                end
+            else
+                return step
+            end
+        end
+    end
+    return nil
+end
 function ns.GuideRuntime:GetRouteProgress()
     local guide = self:GetCurrentGuide()
-    if not guide then return 0, 0, 0 end
-    local complete = 0
+    if not guide then return 0, 0, 0, 0 end
+    local complete, skipped = 0, 0
     for _, step in ipairs(guide.steps) do
-        if self:IsStepComplete(step) then complete = complete + 1 end
+        if self:IsStepSkipped(step, guide.id) then
+            skipped = skipped + 1
+        elseif self:IsStepComplete(step) then
+            complete = complete + 1
+        end
     end
     local current = self.currentStepID and guide.stepIndexes[self.currentStepID] or #guide.steps
-    return complete, #guide.steps, current
+    return complete, #guide.steps, current, skipped
 end
 
 function ns.GuideRuntime:Initialize()
+    ns.EventFrame:RegisterEvent("PLAYER_LEVEL_UP")
     local characterDB = ns:GetCharacterDB()
     if type(characterDB.generatedGuide) == "table" then
         local restored = ns:RegisterGuide(characterDB.generatedGuide)
@@ -71,6 +111,10 @@ function ns.GuideRuntime:Initialize()
         else
             self.currentStepID = guide.steps[1].id
         end
+        if self.currentStepID then
+            local adaptiveStep = self:FindAdaptiveStep(guide)
+            if adaptiveStep then self.currentStepID = adaptiveStep.id end
+        end
         SaveProgress(self)
         self:Evaluate()
     else
@@ -89,12 +133,8 @@ function ns.GuideRuntime:SelectGuide(guideID)
     -- Resume from the earliest uncompleted step for an active quest in this
     -- guide. This uses the live quest log, so starting a guide mid-chain does
     -- not force the player to replay its opening steps.
-    local activeStep = self:FindActiveQuestStep(guide)
-    if activeStep then
-        self.currentStepID = activeStep.id
-    else
-        self.currentStepID = guide.steps[1] and guide.steps[1].id
-    end
+    local adaptiveStep = self:FindAdaptiveStep(guide)
+    self.currentStepID = adaptiveStep and adaptiveStep.id or nil
     SaveProgress(self)
     self:Evaluate()
     return true
@@ -105,6 +145,8 @@ function ns.GuideRuntime:Reset()
     if not guide then
         return false, "no guide selected"
     end
+    local overrides = GetOverrides(self, guide.id)
+    for stepID in pairs(overrides) do overrides[stepID] = nil end
     self.currentStepID = guide.steps[1].id
     SaveProgress(self)
     self:Evaluate()
@@ -273,6 +315,7 @@ function ns.GuideRuntime:IsGoalComplete(goal)
 end
 
 function ns.GuideRuntime:IsStepComplete(step)
+    if self:IsStepSkipped(step) then return true end
     if not step or #step.goals == 0 then
         return false
     end
@@ -290,6 +333,26 @@ function ns.GuideRuntime:IsStepComplete(step)
     return completed == #step.goals
 end
 
+function ns.GuideRuntime:IsStepSkipped(step, guideID)
+    local guide = guideID and ns.Guides[guideID] or self:GetCurrentGuide()
+    if not guide or not step then return false end
+    local override = GetOverrides(self, guide.id)[step.id]
+    return override == true or type(override) == "string"
+end
+
+-- Explicit catch-up override: advances guide presentation only and does not
+-- record a quest as completed in character history.
+function ns.GuideRuntime:SkipCurrentStep()
+    local guide = self:GetCurrentGuide()
+    local step = self:GetCurrentStep()
+    if not guide or not step then return false, "no active guide step" end
+    GetOverrides(self, guide.id)[step.id] = true
+    self.currentStepID = GetNextStep(guide, step.id)
+    SaveProgress(self)
+    self:Evaluate()
+    return true
+end
+
 function ns.GuideRuntime:Evaluate()
     local guide = self:GetCurrentGuide()
     if not guide or not self.currentStepID then
@@ -299,9 +362,18 @@ function ns.GuideRuntime:Evaluate()
     local advances = 0
     while self.currentStepID and advances < #guide.steps do
         local step = self:GetCurrentStep()
-        if not self:IsStepComplete(step) then
-            break
+        local questID = StepQuestID(step)
+        if questID and not ns.QuestState:IsQuestActive(questID)
+            and ns.Provider:GetQuestLevelStatus(questID) == "gray"
+            and not self:IsStepComplete(step) then
+            local prerequisitesConfirmed = ns.Provider:AreQuestPrerequisitesConfirmed(questID)
+            if prerequisitesConfirmed then
+                GetOverrides(self, guide.id)[step.id] = "auto:gray-level"
+            else
+                break
+            end
         end
+        if not self:IsStepComplete(step) then break end
 
         self.currentStepID = GetNextStep(guide, self.currentStepID)
         advances = advances + 1
@@ -335,14 +407,7 @@ function ns.GuideRuntime:SelectStepNumber(number)
 end
 
 function ns.GuideRuntime:NextStep()
-    local guide = self:GetCurrentGuide()
-    if not guide or not self.currentStepID then
-        return false, "no active step"
-    end
-
-    self.currentStepID = GetNextStep(guide, self.currentStepID)
-    SaveProgress(self)
-    return true
+    return self:SkipCurrentStep()
 end
 
 function ns.GuideRuntime:PreviousStep()
@@ -355,7 +420,14 @@ function ns.GuideRuntime:PreviousStep()
     return true
 end
 
-function ns.GuideRuntime:HandleEvent()
+function ns.GuideRuntime:HandleEvent(event)
+    if event == "PLAYER_LEVEL_UP" then
+        local guide = self:GetCurrentGuide()
+        if guide then
+            local adaptiveStep = self:FindAdaptiveStep(guide)
+            if adaptiveStep then self.currentStepID = adaptiveStep.id end
+        end
+    end
     self:Evaluate()
 end
 
@@ -374,6 +446,12 @@ function ns.GuideRuntime:GetProgressText()
     local step = self:GetCurrentStep()
     if not step then
         return ""
+    end
+    if self:IsStepSkipped(step) then
+        local override = GetOverrides(self, self.currentGuideID)[step.id]
+        return override == "auto:gray-level"
+            and "Skipped automatically: below-level quest; known prerequisites are confirmed."
+            or "Skipped by player override; quest history remains unconfirmed."
     end
     if #step.goals == 0 then
         return "Manual step"
