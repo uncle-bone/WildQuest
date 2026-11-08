@@ -2,7 +2,7 @@
 ## Title: WildQuest
 ## Notes: Standalone questing, route guides, gear, talents, and gold tools for WoW Forever
 ## Author: Uncle Bone
-## Version: 0.1.0-alpha.13
+## Version: 0.1.0-alpha.14
 ## SavedVariables: WildQuestDB
 ## X-Game-Type: camelot
 
