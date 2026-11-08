@@ -4,7 +4,7 @@ WildQuest is a standalone questing and character helper for WoW Forever client 1
 
 ## Current development build: 0.1.0-alpha.15
 
-Alpha.14 adds an explicit guide-step catch-up override. Use **Skip step** in the tracker or `/wq skip` (also `/wq next`) to move past a guide step the character has already completed or does not need. The choice persists per character and guide, is labeled as skipped, and is not recorded as quest completion. `/wq reset` clears those overrides for the current guide. Selecting a guide starts at an unfinished quest already present in the live quest log when one is found; unobserved history is never silently treated as complete.
+Alpha.15 adds level-aware catch-up. Active quests in the selected route take priority. Grey quests are automatically skipped only when WildQuest confirms their known OR/AND prerequisites; an uncertain chain remains visible so a required gate is not silently skipped. Use **Skip step** or `/wq skip` as an explicit guide-only override. Skips do not record quest completion, and `/wq reset` clears them for the current guide.
 
 The personal install bundle contains a standalone Forever quest database and a 334-pack ordered route index (7,049 quest steps) assembled from the supplied RXP and Zygor route coverage. Route names, quest facts and ordering are generated for WildQuest; third-party prose and scripts are not bundled. The full data payload is intentionally absent from this public repository because its upstream redistribution rights have not been cleared.
 
