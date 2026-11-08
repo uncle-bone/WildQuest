@@ -151,10 +151,11 @@ function ns.Tracker:Initialize()
         self:Refresh()
     end)
     self.prevStep:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 20, 18)
-    self.nextStep = MakeButton(frame, 130, 28, "Next step", function()
+    self.nextStep = MakeButton(frame, 130, 28, "Skip step", function()
         local ok, err = ns.GuideRuntime:NextStep()
-        if not ok then ns:Print(err) end
+        if not ok then ns:Print(err) else ns:Print("step skipped by your override; quest completion was not recorded.") end
         self:Refresh()
+        ns.GuidePane:Refresh()
     end)
     self.nextStep:SetPoint("LEFT", self.prevStep, "RIGHT", 8, 0)
     self.backButton = MakeButton(frame, 150, 28, "Back to guides", function() self:SetPage("guides") end)
